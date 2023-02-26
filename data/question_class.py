@@ -5,12 +5,7 @@ from sqlalchemy import orm
 from .db_session import SqlAlchemyBase
 
 
-class Group(SqlAlchemyBase):
-    __tablename__ = 'groups'
 
-    id_group = sqlalchemy.Column(sqlalchemy.Integer,
-                                 primary_key=True, autoincrement=True)
-    label = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
 
 class Question(SqlAlchemyBase):
@@ -21,7 +16,7 @@ class Question(SqlAlchemyBase):
 
     texts = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     id_group = sqlalchemy.Column(sqlalchemy.Integer,
-                                 sqlalchemy.ForeignKey("group.id_group"))
+                                 sqlalchemy.ForeignKey("groups.id"))
     group = orm.relationship('Group')
 
 #     def add_question(self, id_quest: int, text: str, id_group: int):
