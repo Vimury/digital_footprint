@@ -9,3 +9,5 @@
 Описание классов https://docs.google.com/spreadsheets/d/1Fk5AjQGe6-0tXz6vw8xa5HYvNYSbBCi-0L95t-GT3MM/edit#gid=0
 
 Внешний вид https://jamboard.google.com/d/1iCY8uaG0f47iKhrHZgTPiYq6nQdf4gqutY6VixZRGxM/viewer?f=1
+
+Задание на 18 марта
