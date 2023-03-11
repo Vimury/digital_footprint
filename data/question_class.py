@@ -5,9 +5,6 @@ from sqlalchemy import orm
 from .db_session import SqlAlchemyBase
 
 
-
-
-
 class Question(SqlAlchemyBase):
     __tablename__ = 'questions'
 
@@ -16,7 +13,7 @@ class Question(SqlAlchemyBase):
 
     texts = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     id_group = sqlalchemy.Column(sqlalchemy.Integer,
-                                 sqlalchemy.ForeignKey("groups.id"))
+                                 sqlalchemy.ForeignKey("groups.id_group"))
     group = orm.relationship('Group')
 
 #     def add_question(self, id_quest: int, text: str, id_group: int):

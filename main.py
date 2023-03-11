@@ -16,8 +16,8 @@ def main():
 
 if __name__ == '__main__':
     db_sess = db_session.create_session()
-    question = Question()
-    user = db_sess.query(Question).first()
-    print(user.texts)
-    print(user.group.label)
+    # question = Question()
+    # user = db_sess.query(Question).first()
+    # print(user.texts)
+    # print(user.group.label)
     main()
