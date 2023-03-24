@@ -1,6 +1,10 @@
 import datetime
 import sqlalchemy
 from sqlalchemy import orm
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField
+from wtforms import BooleanField, SubmitField
+from wtforms.validators import DataRequired
 
 from .db_session import SqlAlchemyBase
 
@@ -15,6 +19,12 @@ class Question(SqlAlchemyBase):
     id_group = sqlalchemy.Column(sqlalchemy.Integer,
                                  sqlalchemy.ForeignKey("groups.id_group"))
     group = orm.relationship('Group')
+
+
+class QuestionForm(FlaskForm):
+    title = StringField('Тема', validators=[DataRequired()])
+    content = TextAreaField("Вопрос")
+    submit = SubmitField('Применить')
 
 #     def add_question(self, id_quest: int, text: str, id_group: int):
 #         self.id_questions.append(id_quest)
