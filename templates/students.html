@@ -1,0 +1,54 @@
+{% extends "head.html" %}
+<title>{% block title %} {{title}} {% endblock title %}</title>
+{% block content %}
+{% for user in query_students %}
+<div class="col-md6 border rounded">
+    <h2>{{user.name}}</h2>
+    <div>
+        Дата рождения: {{user.birthday}}<br>
+        ID Stepik: {{user.id_stepik}}
+    </div>
+    <div>
+        <a href="/students/{{user.id_student}}" class="btn btn-warning">
+            Изменить
+        </a>
+    </div>
+</div>
+{% endfor %}
+<br>
+<div class="col-md6 border rounded">
+    <h2>Добавить студента</h2>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.name.label }}<br>
+            {{ form.name(class="form-control") }}<br>
+            {% for error in form.name.errors %}
+        <p class="alert alert-danger" role="alert">
+            {{ error }}
+        </p>
+        {% endfor %}
+        </p>
+        <p>
+            {{ form.date.label }}<br>
+            {{ form.date(class="form-control") }}<br>
+            {% for error in form.date.errors %}
+        <p content="alert alert-danger" role="alert">
+            {{ error }}
+        </p>
+        {% endfor %}
+        </p>
+        <p>
+            {{ form.id_stepik.label }}<br>
+            {{ form.id_stepik(class="form-control") }}<br>
+            {% for error in form.date.errors %}
+        <p content="alert alert-danger" role="alert">
+            {{ error }}
+        </p>
+        {% endfor %}
+        </p>
+        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        {{message}}
+    </form>
+</div>
+{% endblock %}
