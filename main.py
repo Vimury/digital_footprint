@@ -3,6 +3,7 @@ from flask import Flask, render_template, redirect, request, abort
 from data import db_session
 from data.group_class import Group
 from data.question_class import Question, QuestionForm
+from data.student_class import Student, StudentForm
 
 db_session.global_init("db/digital_footprint.db")
 
@@ -70,6 +71,61 @@ def questions_delete(id):
     else:
         abort(404)
     return redirect('/questions')
+
+
+@app.route("/students", methods=['GET', 'POST'])
+def students():
+    query_students = db_sess.query(Student).all()
+    form = StudentForm()
+    if form.validate_on_submit():
+        student = Student()
+        student.name = form.name.data
+        student.birthday = form.date.data
+        student.id_stepik = form.id_stepik.data
+        db_sess.add(student)
+        db_sess.commit()
+
+        return redirect('/students')
+    return render_template('students.html', query_students=query_students,
+                           title="Студенты", form=form)
+
+
+@app.route('/students/<int:id>', methods=['GET', 'POST'])
+def students_edit(id):
+    form = StudentForm()
+    if request.method == "GET":
+        db_sess = db_session.create_session()
+        student = db_sess.query(Student).filter(Student.id_student == id).first()
+        if student:
+            form.name.data = student.name
+            form.date.data = student.birthday
+            form.id_stepik.data = student.id_stepik
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        student = db_sess.query(Student).filter(Student.id_student == id).first()
+        if student:
+            student.name = form.name.data
+            student.birthday = form.date.data
+            student.id_stepik = form.id_stepik.data
+            db_sess.commit()
+            return redirect('/students')
+        else:
+            abort(404)
+    return render_template('students_edit.html', title="ниЧиво?", form=form, id=student.id_student)
+
+
+@app.route('/students_delete/<int:id>', methods=['GET', 'POST'])
+def students_delete(id):
+    db_sess = db_session.create_session()
+    student = db_sess.query(Student).filter(Student.id_student == id).first()
+    if student:
+        db_sess.delete(student)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/students')
 
 
 @app.route('/index')
