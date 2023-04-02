@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request, abort
 
 from data import db_session
-from data.group_class import Group
+from data.group_class import Group, GroupForm
 from data.question_class import Question, QuestionForm
 from data.student_class import Student, StudentForm
 
@@ -128,6 +128,54 @@ def students_delete(id):
     return redirect('/students')
 
 
+@app.route('/groups', methods=['GET', 'POST'])
+def groups():
+    query_groups = db_sess.query(Group).all()
+    form = GroupForm()
+    if form.validate_on_submit():
+        group = Group()
+        group.label = form.label.data
+        db_sess.add(group)
+        db_sess.commit()
+        return redirect('/groups')
+    return render_template('groups.html', query_groups=query_groups,
+                           title="Группы", form=form)
+
+
+@app.route('/groups/<int:id>', methods=['GET', 'POST'])
+def edit_groups(id):
+    form = GroupForm()
+    if request.method == "GET":
+        db_sess = db_session.create_session()
+        group = db_sess.query(Group).filter(Group.id_group == id).first()
+        if group:
+            form.label.data = group.label
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        group = db_sess.query(Group).filter(Group.id_group == id).first()
+        if group:
+            group.label = form.label.data
+            db_sess.commit()
+            return redirect('/groups')
+        else:
+            abort(404)
+    return render_template('groups_edit.html', title="ниЧиво?", form=form, id=group.id_group)
+
+
+@app.route('/groups_delete/<int:id>', methods=['GET', 'POST'])
+def groups_delete(id):
+    db_sess = db_session.create_session()
+    group = db_sess.query(Group).filter(Group.id_group == id).first()
+    if group:
+        db_sess.delete(group)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/groups')
+
+
 @app.route('/index')
 @app.route('/')
 def index():
@@ -136,11 +184,4 @@ def index():
 
 if __name__ == '__main__':
     db_sess = db_session.create_session()
-    # question = Question()
-    # user = db_sess.query(Question).first()
-    # print(user.texts)
-    # print(user.group.label)
-    # В принципе, это не очень сейчас нужно, но удалять я пока явно не буду
     main()
-
-# abacaba, что ли

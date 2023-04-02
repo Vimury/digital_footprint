@@ -1,0 +1,29 @@
+{% extends "head.html" %}
+<title>{% block title %} {{title}} {% endblock title %}</title>
+{% block content %}
+<br>
+<div class="col-md6 border rounded">
+    <h2>Изменить группу</h2>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.label.label }}<br>
+            {{ form.label(class="form-control") }}<br>
+            {% for error in form.label.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+        </p>
+
+        <div>
+            {{ form.submit(type="submit", class="btn btn-primary") }}
+            <a href="/groups_delete/{{id}}" class="btn btn-danger">
+                Удалить
+            </a>
+        </div>
+        {{message}}
+
+    </form>
+</div>
+{% endblock %}
