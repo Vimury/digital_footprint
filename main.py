@@ -4,7 +4,6 @@ from data import db_session
 from data.group_class import Group, GroupForm
 from data.question_class import Question, QuestionForm
 from data.student_class import Student, StudentForm
-from groups_edit import g, g_edit, g_delete
 
 db_session.global_init("db/digital_footprint.db")
 
@@ -38,7 +37,7 @@ def questions():
 
 
 @app.route('/questions/<int:id>', methods=['GET', 'POST'])
-def questions_edit(id):
+def edit_questions(id):
     form = QuestionForm()
     if request.method == "GET":
         db_sess = db_session.create_session()
@@ -131,17 +130,50 @@ def students_delete(id):
 
 @app.route('/groups', methods=['GET', 'POST'])
 def groups():
-    g()  # -> groups_edit
+    query_groups = db_sess.query(Group).all()
+    form = GroupForm()
+    if form.validate_on_submit():
+        group = Group()
+        group.label = form.label.data
+        db_sess.add(group)
+        db_sess.commit()
+        return redirect('/groups')
+    return render_template('groups.html', query_groups=query_groups,
+                           title="Группы", form=form)
 
 
 @app.route('/groups/<int:id>', methods=['GET', 'POST'])
-def groups_edit(id):
-    g_edit(id)  # -> groups_edit
+def edit_groups(id):
+    form = GroupForm()
+    if request.method == "GET":
+        db_sess = db_session.create_session()
+        group = db_sess.query(Group).filter(Group.id_group == id).first()
+        if group:
+            form.label.data = group.label
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        group = db_sess.query(Group).filter(Group.id_group == id).first()
+        if group:
+            group.label = form.label.data
+            db_sess.commit()
+            return redirect('/groups')
+        else:
+            abort(404)
+    return render_template('groups_edit.html', title="ниЧиво?", form=form, id=group.id_group)
 
 
 @app.route('/groups_delete/<int:id>', methods=['GET', 'POST'])
 def groups_delete(id):
-    g_delete(id)  # -> groups_edit
+    db_sess = db_session.create_session()
+    group = db_sess.query(Group).filter(Group.id_group == id).first()
+    if group:
+        db_sess.delete(group)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/groups')
 
 
 @app.route('/index')
