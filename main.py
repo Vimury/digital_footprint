@@ -4,6 +4,8 @@ from data import db_session
 from data.group_class import Group, GroupForm
 from data.question_class import Question, QuestionForm
 from data.student_class import Student, StudentForm
+from data.quiz_class import Quiz, QuizForm
+from data.test_class import Test
 
 db_session.global_init("db/digital_footprint.db")
 
@@ -173,6 +175,21 @@ def groups_delete(id):
     else:
         abort(404)
     return redirect('/groups')
+
+
+@app.route('/quiz/<int:id>', methods=['GET', 'POST'])
+def quiz(id):
+    db_sess = db_session.create_session()
+    query_quiz = db_sess.query(Quiz).filter(Quiz.id_quiz == id)
+    tests = db_sess.query(Test).filter(Test.id_quiz == id).all()
+    quests = []
+    for i in tests:
+        quests.append(db_sess.query(Question).filter(Question.id_question == i.id_question).first())
+    form = QuizForm()
+    if form.validate_on_submit():
+        return redirect("/")
+    return render_template('quiz_page.html', id=id, query_quiz=query_quiz,
+                           query_questions=quests, title="Тестирование", form=form)
 
 
 @app.route('/index')
