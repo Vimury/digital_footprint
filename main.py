@@ -24,6 +24,13 @@ def main():
 def questions():
     query_questions = db_sess.query(Question).all()
     query_groups = db_sess.query(Group)
+    return render_template('questions.html', query_questions=query_questions, query_groups=query_groups,
+                           title="Вопросы")
+
+@app.route('/questions/add/<int:id>', methods=['GET', 'POST'])
+def add_questions(id):
+    query_questions = db_sess.query(Question).all()
+    query_groups = db_sess.query(Group)
     form = QuestionForm()
     if form.validate_on_submit():
         question = Question()
@@ -31,9 +38,8 @@ def questions():
         question.id_group = query_groups.filter_by(label=form.title.data).first().id_group
         db_sess.add(question)
         db_sess.commit()
-
         return redirect('/questions')
-    return render_template('questions.html', query_questions=query_questions, query_groups=query_groups,
+    return render_template('questions_add.html', query_questions=query_questions, query_groups=query_groups,
                            title="Вопросы", form=form)
 
 
@@ -59,6 +65,7 @@ def edit_questions(id):
             return redirect('/questions')
         else:
             abort(404)
+
     return render_template('questions_edit.html', title="ниЧиво?", form=form, id=question.id_question)
 
 
