@@ -20,6 +20,6 @@ class Question(SqlAlchemyBase):
 
 
 class QuestionForm(FlaskForm):
-    title = StringField('Тема', validators=[DataRequired()])
+    title = StringField('Тема')
     content = TextAreaField("Вопрос")
     submit = SubmitField('Применить')
