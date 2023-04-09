@@ -6,6 +6,8 @@ from data.question_class import Question, QuestionForm
 from data.student_class import Student, StudentForm
 from data.quiz_class import Quiz, QuizForm
 from data.test_class import Test
+from data.register_form import RegisterForm
+from data.login_form import LoginForm
 
 db_session.global_init("db/digital_footprint.db")
 
@@ -202,10 +204,33 @@ def quiz(id):
                            query_questions=quests, title="Тестирование", form=form)
 
 
-@app.route('/index')
-@app.route('/')
-def index():
-    return render_template('index.html')
+@app.route("/login", methods=['GET', 'POST'])
+@app.route("/", methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        return redirect('/')
+    return render_template('login.html', title='Авторизация', form=form)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        if db_sess.query(Student).filter(Student.name == form.name.data).first():
+            return render_template('register.html', title='Регистрация',
+                                   form=form,
+                                   message="Такой пользователь уже есть")
+        student = Student(
+            name=form.name.data,
+            birthday=form.birthday.data,
+            id_stepik=form.stepik_id.data
+        )
+        db_sess.add(student)
+        db_sess.commit()
+        return redirect('/login')
+    return render_template('register.html', title='Регистрация', form=form)
 
 
 if __name__ == '__main__':

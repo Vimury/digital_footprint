@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+<!--    <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/design.css')}" />-->
+<!--    <link rel="stylesheet" type="text/css" href="../design/css/timer.css" />-->
+<!--    <script src="../timer.js"></script>-->
+
+    <title>{% block title %} Тестирующая система {% endblock title %}</title>
+</head>
+<body>
+<main role="main" class="container">
+<div class="col-md6 border rounded">
+    <h1>Регистрация</h1>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.name.label }}<br>
+        {{ form.name(class="form-control") }}<br>
+        {% for error in form.name.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.birthday.label }}<br>
+        {{ form.birthday(class="form-control") }}<br>
+        {% for error in form.birthday.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.stepik_id.label }}<br>
+        {{ form.stepik_id(class="form-control") }}<br>
+        {% for error in form.stepik_id.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    {{message}}
+</body>
+</main>
+</html>
