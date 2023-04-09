@@ -29,31 +29,32 @@ def questions():
     return render_template('questions.html', query_questions=query_questions, query_groups=query_groups,
                            title="Вопросы")
 
-
 @app.route('/questions/add/<int:id>', methods=['GET', 'POST'])
 def add_questions(id):
     query_questions = db_sess.query(Question).all()
     query_groups = db_sess.query(Group)
     form = QuestionForm()
+    theme = query_groups.filter_by(id_group=id).first().label
     if form.validate_on_submit():
         question = Question()
         question.texts = form.content.data
-        question.id_group = query_groups.filter_by(label=form.title.data).first().id_group
+        question.id_group = id
         db_sess.add(question)
         db_sess.commit()
         return redirect('/questions')
     return render_template('questions_add.html', query_questions=query_questions, query_groups=query_groups,
-                           title="Вопросы", form=form)
+                           title="Вопросы", form=form, theme=theme)
 
 
 @app.route('/questions/<int:id>', methods=['GET', 'POST'])
 def edit_questions(id):
     form = QuestionForm()
+    theme = 0
     if request.method == "GET":
         db_sess = db_session.create_session()
         question = db_sess.query(Question).filter(Question.id_question == id).first()
         group = db_sess.query(Group)
-        form.title.data = group.filter_by(id_group=question.id_group).first().label
+        theme = group.filter_by(id_group=question.id_group).first().label
         if question:
             form.content.data = question.texts
         else:
@@ -69,7 +70,7 @@ def edit_questions(id):
         else:
             abort(404)
 
-    return render_template('questions_edit.html', title="ниЧиво?", form=form, id=question.id_question)
+    return render_template('questions_edit.html', title="ниЧиво?", form=form, id=id, theme=theme)
 
 
 @app.route('/questions_delete/<int:id>', methods=['GET', 'POST'])
@@ -231,6 +232,21 @@ def register():
         db_sess.commit()
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
+
+@app.route('/dsu')
+def dsu():
+    query_questions = db_sess.query(Question).all()
+    query_groups = db_sess.query(Group)
+    query_groups = db_sess.query(Group).all()
+    form = GroupForm()
+    if form.validate_on_submit():
+        group = Group()
+        group.label = form.label.data
+        db_sess.add(group)
+        db_sess.commit()
+        return redirect('/dsu')
+    return render_template('dsu.html', query_questions=query_questions, query_groups=query_groups,
+                           title="Список тем и вопросов", form=form)
 
 
 if __name__ == '__main__':
