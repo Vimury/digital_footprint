@@ -12,3 +12,4 @@ class Test(SqlAlchemyBase):
                                     sqlalchemy.ForeignKey("questions.id_question"))
     id_quiz = sqlalchemy.Column(sqlalchemy.Integer,
                                 sqlalchemy.ForeignKey("quizzes.id_quiz"))
+    stud_answers = sqlalchemy.Column(sqlalchemy.String)

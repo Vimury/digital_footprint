@@ -27,6 +27,7 @@ def questions():
     return render_template('questions.html', query_questions=query_questions, query_groups=query_groups,
                            title="Вопросы")
 
+
 @app.route('/questions/add/<int:id>', methods=['GET', 'POST'])
 def add_questions(id):
     query_questions = db_sess.query(Question).all()
@@ -194,8 +195,10 @@ def quiz(id):
         quests.append(db_sess.query(Question).filter(Question.id_question == i.id_question).first())
     form = QuizForm()
     if form.validate_on_submit():
+        for i in range(3):
+            tests[i].stud_answer = form.answers.data[i]
         return redirect("/")
-    return render_template('quiz_page.html', id=id, query_quiz=query_quiz,
+    return render_template('quiz_page.html', id=id, questions_num=3,
                            query_questions=quests, title="Тестирование", form=form)
 
 
