@@ -84,6 +84,10 @@ def questions_delete(id):
         abort(404)
     return redirect('/questions')
 
+@app.route('/timer_test')
+def timer_test():
+    return render_template('test_timer.html', timer=120)
+
 
 @app.route("/students", methods=['GET', 'POST'])
 def students():
@@ -204,16 +208,6 @@ def quiz(id):
     return render_template('quiz_page.html', id=id, questions_num=3,
                            query_questions=quests, title="Тестирование", form=form)
 
-
-@app.route("/login", methods=['GET', 'POST'])
-@app.route("/", methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        return redirect('/')
-    return render_template('login.html', title='Авторизация', form=form)
-
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
@@ -233,21 +227,10 @@ def register():
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
 
-@app.route('/dsu')
-def dsu():
-    query_questions = db_sess.query(Question).all()
-    query_groups = db_sess.query(Group)
-    query_groups = db_sess.query(Group).all()
-    form = GroupForm()
-    if form.validate_on_submit():
-        group = Group()
-        group.label = form.label.data
-        db_sess.add(group)
-        db_sess.commit()
-        return redirect('/dsu')
-    return render_template('dsu.html', query_questions=query_questions, query_groups=query_groups,
-                           title="Список тем и вопросов", form=form)
-
+@app.route("/")
+@app.route("/index")
+def index():
+    return render_template('index.html')
 
 if __name__ == '__main__':
     db_sess = db_session.create_session()
