@@ -8,6 +8,7 @@ from data.quiz_class import Quiz, QuizForm
 from data.test_class import Test
 from data.register_form import RegisterForm
 from data.login_form import LoginForm
+from generate_quiz import generate_quiz, generate_full
 
 db_session.global_init("db/digital_footprint.db")
 
@@ -16,11 +17,8 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 
 def main():
-    app.run(host='127.0.0.1', port=8080, debug=True)
+    app.run(host='127.0.0.1', port=8080, debug=True, use_reloader=False)
 
-
-# Надо же эти функции по файлам раскидать
-# А как?
 
 @app.route("/questions", methods=['GET', 'POST'])
 def questions():
@@ -28,6 +26,7 @@ def questions():
     query_groups = db_sess.query(Group)
     return render_template('questions.html', query_questions=query_questions, query_groups=query_groups,
                            title="Вопросы")
+
 
 @app.route('/questions/add/<int:id>', methods=['GET', 'POST'])
 def add_questions(id):
@@ -83,6 +82,7 @@ def questions_delete(id):
     else:
         abort(404)
     return redirect('/questions')
+
 
 @app.route('/timer_test')
 def timer_test():
@@ -202,11 +202,15 @@ def quiz(id):
         quests.append(db_sess.query(Question).filter(Question.id_question == i.id_question).first())
     form = QuizForm()
     if form.validate_on_submit():
-        for i in range(3):
-            tests[i].stud_answer = form.answers.data[i]
+        for i in range(5):
+            tests[i].stud_answers = form.answers.data[i]
         return redirect("/")
-    return render_template('quiz_page.html', id=id, questions_num=3,
+
+    db_sess.commit()
+
+    return render_template('quiz_page.html', id=id, questions_num=5,
                            query_questions=quests, title="Тестирование", form=form)
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -227,11 +231,14 @@ def register():
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
 
+
 @app.route("/")
 @app.route("/index")
 def index():
     return render_template('index.html')
 
+
 if __name__ == '__main__':
     db_sess = db_session.create_session()
+    generate_full([1, 2], groups=[1])
     main()

@@ -13,3 +13,5 @@ class Test(SqlAlchemyBase):
     id_quiz = sqlalchemy.Column(sqlalchemy.Integer,
                                 sqlalchemy.ForeignKey("quizzes.id_quiz"))
     stud_answers = sqlalchemy.Column(sqlalchemy.String)
+    mark = sqlalchemy.Column(sqlalchemy.Integer)
+    comment = sqlalchemy.Column(sqlalchemy.String)
