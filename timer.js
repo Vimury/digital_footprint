@@ -1,5 +1,5 @@
 <script>
-    let work_time = 30;
+    let work_time = 300;
     let a = new Date();
     let $timer = $('timer');
     function check_time()
@@ -9,7 +9,7 @@
         return diff;
     }
 
-    function display(){
+    function ret(){
         let sum = work_time - check_time();
         console.log(sum);
         if(sum>=0) {
@@ -18,10 +18,11 @@
                 $timer[0].innerHTML = Math.floor(mins / 10) + (mins % 10) + ':' + Math.floor(secs / 10) + (secs % 10);
             }
         } else {
-            $timer[0].innerHTML = "TIME IS UP!";
             clearInterval(time);
+            let forms = document.querySelector('form');
+            HTMLFormElement.prototype.submit.call(forms);
         }
     }
-    display();
-    let time = setInterval(display,1000);
+    ret();
+    let time = setInterval(ret,1000);
 </script>
