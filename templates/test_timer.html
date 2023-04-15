@@ -4,12 +4,22 @@
     <meta charset="UTF-8">
     <title>Тестирование таймера</title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+	<style>
+		timer {
+			font-size: 20px;
+			padding: 3px 5px 3px 5px;
+		}
+	</style>
 </head>
 <body>
-    <timer>
+	<timer class="col-md6 border rounded">
 	</timer>
     <script>
-		let work_time = {{ timer }};
+		let work_time = {{timer}};
 		let a = new Date();
 		let $timer = $('timer');
 		function check_time()
@@ -28,8 +38,8 @@
 					$timer[0].innerHTML = Math.floor(mins / 10) + (mins % 10) + ':' + Math.floor(secs / 10) + (secs % 10);
 				}
 			} else {
-				$timer[0].innerHTML = "TIME IS UP!";
 				clearInterval(time);
+				document.getElementById('form').submit();
 			}
 		}
 		ret();

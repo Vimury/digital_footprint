@@ -86,7 +86,7 @@ def questions_delete(id):
 
 @app.route('/timer_test')
 def timer_test():
-    return render_template('test_timer.html', timer=120)
+    return render_template('test_timer.html', timer=300)
 
 
 @app.route("/students", methods=['GET', 'POST'])
