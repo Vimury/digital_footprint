@@ -202,6 +202,7 @@ def quiz(id):
         quests.append(db_sess.query(Question).filter(Question.id_question == i.id_question).first())
     form = QuizForm()
     if form.validate_on_submit():
+        print(form.answers.data)
         for i in range(5):
             tests[i].stud_answers = form.answers.data[i]
         return redirect("/")
@@ -209,7 +210,7 @@ def quiz(id):
     db_sess.commit()
 
     return render_template('quiz_page.html', id=id, questions_num=5,
-                           query_questions=quests, title="Тестирование", form=form)
+                           query_questions=quests, title="Тестирование", form=form, timer=60)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -240,5 +241,4 @@ def index():
 
 if __name__ == '__main__':
     db_sess = db_session.create_session()
-    generate_full([1, 2], groups=[1])
     main()
