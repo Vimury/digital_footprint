@@ -210,7 +210,7 @@ def quiz(id):
     db_sess.commit()
 
     return render_template('quiz_page.html', id=id, questions_num=5,
-                           query_questions=quests, title="Тестирование", form=form, timer=60)
+                           query_questions=quests, title="Тестирование", form=form, timer=10)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -241,4 +241,5 @@ def index():
 
 if __name__ == '__main__':
     db_sess = db_session.create_session()
+    # generate_full([1, 2], groups=[1])
     main()
