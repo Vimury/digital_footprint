@@ -84,11 +84,6 @@ def questions_delete(id):
     return redirect('/questions')
 
 
-@app.route('/timer_test')
-def timer_test():
-    return render_template('test_timer.html', timer=300)
-
-
 @app.route("/students", methods=['GET', 'POST'])
 def students():
     query_students = db_sess.query(Student).all()
@@ -202,9 +197,9 @@ def quiz(id):
         quests.append(db_sess.query(Question).filter(Question.id_question == i.id_question).first())
     form = QuizForm()
     if form.validate_on_submit():
-        print(form.answers.data)
         for i in range(5):
             tests[i].stud_answers = form.answers.data[i]
+        db_sess.commit()
         return redirect("/")
 
     db_sess.commit()
