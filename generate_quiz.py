@@ -7,11 +7,11 @@ from data.test_class import Test
 from random import choice
 
 
-def generate_quiz(id_student, date_quiz=None, groups=[]):
+def generate_quiz(id_student, id_groups, date_quiz=None):
     # Создаёт quiz для одного студента
     db_sess = db_session.create_session()
 
-    query_question = db_sess.query(Question).filter(Question.id_group.in_(groups)).all()
+    query_question = db_sess.query(Question).filter(Question.id_group.in_(id_groups)).all()
 
     quiz = Quiz(id_student=id_student, date=date_quiz)
     db_sess.add(quiz)
@@ -33,13 +33,9 @@ def generate_quiz(id_student, date_quiz=None, groups=[]):
     db_sess.commit()
 
 
-def generate_full(id_students, groups=[]):
+def generate_full(id_students, id_groups):
     # Создаёт quiz для всех студентов
     db_sess = db_session.create_session()
 
-    if not groups:
-        for i in range(len(db_sess.query(Group).all())):
-            groups.append(i + 1)
-
     for id_student in id_students:
-        generate_quiz(id_student, groups=groups)
+        generate_quiz(id_student, id_groups=id_groups)

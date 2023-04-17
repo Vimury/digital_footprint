@@ -2,13 +2,16 @@ from flask import Flask, render_template, redirect, request, abort
 
 from data import db_session
 from data.group_class import Group, GroupForm
+from data.login_form import LoginForm
 from data.question_class import Question, QuestionForm
 from data.student_class import Student, StudentForm
 from data.quiz_class import Quiz, QuizForm
+from data.register_form import RegisterForm
+from data.student_class import Student, StudentForm
 from data.test_class import Test
 from data.register_form import RegisterForm
 from data.login_form import LoginForm
-from generate_quiz import generate_quiz, generate_full
+from generate_quiz import generate_full
 
 db_session.global_init("db/digital_footprint.db")
 
@@ -17,8 +20,11 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 
 def main():
-    app.run(host='127.0.0.1', port=8080, debug=True, use_reloader=False)
+    app.run(host='127.0.0.1', port=8080, debug=True)
 
+
+# Надо же эти функции по файлам раскидать
+# А как?
 
 @app.route("/questions", methods=['GET', 'POST'])
 def questions():
@@ -87,18 +93,23 @@ def questions_delete(id):
 @app.route("/students", methods=['GET', 'POST'])
 def students():
     query_students = db_sess.query(Student).all()
-    form = StudentForm()
-    if form.validate_on_submit():
-        student = Student()
-        student.name = form.name.data
-        student.birthday = form.date.data
-        student.id_stepik = form.id_stepik.data
-        db_sess.add(student)
-        db_sess.commit()
-
-        return redirect('/students')
     return render_template('students.html', query_students=query_students,
-                           title="Студенты", form=form)
+                           title="Студенты")
+
+
+@app.route("/choice_student&groups", methods=['GET', 'POST'])
+def choice_student_groups():
+    query_students = db_sess.query(Student).all()
+    query_groops = db_sess.query(Group).all()
+    if request.method == "POST":
+        groups = [i.id_group for i in query_groops if request.form.get(str(i.label))]
+        if groups:
+            students = [i.id_student for i in query_students if request.form.get(str(i.name) + str(i.birthday))]
+            generate_full(students, groups)
+            return redirect('/')
+
+    return render_template('MDmd.html', query_students=query_students, query_groops=query_groops,
+                           title="Выбрать студентов")
 
 
 @app.route('/students/<int:id>', methods=['GET', 'POST'])
@@ -208,6 +219,14 @@ def quiz(id):
                            query_questions=quests, title="Тестирование", form=form, timer=10)
 
 
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        return redirect('/index')
+    return render_template('login.html', title='Авторизация', form=form)
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
@@ -228,13 +247,43 @@ def register():
     return render_template('register.html', title='Регистрация', form=form)
 
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 @app.route("/index")
 def index():
     return render_template('index.html')
 
 
+@app.route('/add_student', methods=['GET', 'POST'])
+def add_student():
+    form = StudentForm()
+    if form.validate_on_submit():
+        student = Student()
+        student.name = form.name.data
+        student.birthday = form.date.data
+        student.id_stepik = form.id_stepik.data
+        db_sess.add(student)
+        db_sess.commit()
+
+        return redirect('/students')
+    return render_template('add_student.html',
+                           title="Студенты", form=form)
+
+@app.route('/dsu')
+def dsu():
+    query_questions = db_sess.query(Question).all()
+    query_groups = db_sess.query(Group)
+    query_groups = db_sess.query(Group).all()
+    form = GroupForm()
+    if form.validate_on_submit():
+        group = Group()
+        group.label = form.label.data
+        db_sess.add(group)
+        db_sess.commit()
+        return redirect('/dsu')
+    return render_template('dsu.html', query_questions=query_questions, query_groups=query_groups,
+                           title="Список тем и вопросов", form=form)
+
+
 if __name__ == '__main__':
     db_sess = db_session.create_session()
-    # generate_full([1, 2], groups=[1])
     main()
