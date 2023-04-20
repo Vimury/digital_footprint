@@ -1,15 +1,31 @@
 {% extends "head.html" %}
 <title>{% block title %} {{title}} {% endblock title %}</title>
 {% block content %}
-
+<form class="form" action="" method="post">
     {% for i in range(5) %}
     <div>
         <h5>{{questions[i].texts}}</h5>
         <p>{{answers[i]}}</p>
-
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.comments[i].label }}<br>
+            {{ form.comments[i](class="form-control") }}<br>
+            {% for error in form.comments[i].errors %}
+                <p class="alert alert-danger" role="alert">
+                {{ error }}
+                </p>
+            {% endfor %}
+            {{ form.marks[i].label }}<br>
+            {{ form.marks[i](class="form-control") }}<br>
+            {% for error in form.marks[i].errors %}
+                <p class="alert alert-danger" role="alert">
+                {{ error }}
+                </p>
+            {% endfor %}
+        </p>
     </div>
     {% endfor %}
-
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
     {{message}}
-
+</form>
 {% endblock %}

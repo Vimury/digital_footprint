@@ -1,7 +1,7 @@
 import datetime
 import sqlalchemy
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, FieldList
+from wtforms import StringField, SubmitField, FieldList, IntegerField
 from wtforms.validators import DataRequired
 
 from .db_session import SqlAlchemyBase
@@ -19,6 +19,12 @@ class Quiz(SqlAlchemyBase):
 
 
 class QuizForm(FlaskForm):
-   date = StringField("Дата проведения", validators=[DataRequired()], default=datetime.datetime.now())
-   answers = FieldList(StringField("Ответ:", validators=[DataRequired()]), min_entries=3)
-   submit = SubmitField("Отправить")
+    date = StringField("Дата проведения", validators=[DataRequired()], default=datetime.datetime.now())
+    answers = FieldList(StringField("Ответ:", validators=[DataRequired()]), min_entries=5)
+    submit = SubmitField("Отправить")
+
+
+class CheckQuizForm(FlaskForm):
+    comments = FieldList(StringField("Комментарий:"), min_entries=5)
+    marks = FieldList(IntegerField("Оценка:"), validators=[DataRequired()], min_entries=5)
+    submit = SubmitField("Оценить")

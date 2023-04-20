@@ -5,7 +5,7 @@ from data.group_class import Group, GroupForm
 from data.login_form import LoginForm
 from data.question_class import Question, QuestionForm
 from data.student_class import Student, StudentForm
-from data.quiz_class import Quiz, QuizForm
+from data.quiz_class import Quiz, QuizForm, CheckQuizForm
 from data.register_form import RegisterForm
 from data.test_class import Test
 from generate_quiz import generate_full
@@ -280,18 +280,24 @@ def dsu():
                            title="Список тем и вопросов", form=form)
 
 
-@app.route('/check_quiz/<id>')
+@app.route('/check_quiz/<id>', methods=['POST', 'GET'])
 def check_quiz(id):
     quiz = db_sess.query(Quiz).filter(Quiz.id_quiz == id).first()
     student = db_sess.query(Student).filter(Student.id_student == quiz.id_student).first()
     tests = db_sess.query(Test).filter(Test.id_quiz == id).all()
+    form = CheckQuizForm()
     quests = []
     answers = []
     for i in tests:
         quests.append(db_sess.query(Question).filter(Question.id_question == i.id_question).first())
         answers.append(i.stud_answers)
-
-    return render_template("check_quiz.html", name=student.name, answers=answers, questions=quests)
+    if form.validate_on_submit():
+        for i in range(5):
+            tests[i].mark = form.marks.data[i]
+            tests[i].comment = form.comments.data[i]
+        db_sess.commit()
+        return redirect("/")
+    return render_template("check_quiz.html", name=student.name, answers=answers, questions=quests, form=form)
 
 
 if __name__ == '__main__':
