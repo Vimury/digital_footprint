@@ -1,3 +1,5 @@
+import datetime
+import time
 from flask import Flask, render_template, redirect, request, abort
 
 from data import db_session
@@ -85,6 +87,16 @@ def questions_delete(id):
     else:
         abort(404)
     return redirect('/questions')
+
+
+@app.route('/waiting/<int:id>')
+def waiting(id):
+    time = datetime.datetime.now()
+    dl = datetime.timedelta(minutes=5, seconds=30)
+    db_sess = db_session.create_session()
+    current_quizzes = db_sess.query(Quiz).filter_by(id_student=id).all()
+    return render_template('waiting.html', current_quizzes=current_quizzes,
+                           time=time, dl=dl)
 
 
 @app.route("/students", methods=['GET', 'POST'])
@@ -198,7 +210,9 @@ def groups_delete(id):
 @app.route('/quiz/<int:id>', methods=['GET', 'POST'])
 def quiz(id):
     db_sess = db_session.create_session()
-    query_quiz = db_sess.query(Quiz).filter(Quiz.id_quiz == id)
+    query_quiz = db_sess.query(Quiz).filter(Quiz.id_quiz == id).first()
+    pytime = query_quiz.date
+    js_time = int(time.mktime(pytime.timetuple())) * 1000
     tests = db_sess.query(Test).filter(Test.id_quiz == id).all()
     quests = []
     for i in tests:
@@ -211,7 +225,8 @@ def quiz(id):
         return redirect("/")
 
     return render_template('quiz_page.html', id=id, questions_num=5,
-                           query_questions=quests, title="Тестирование", form=form, timer=10)
+                           query_questions=quests, title="Тестирование",
+                           form=form, timer=330, time=js_time)
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -302,4 +317,5 @@ def check_quiz(id):
 
 if __name__ == '__main__':
     db_sess = db_session.create_session()
+    # generate_full([1, 2], [1])
     main()

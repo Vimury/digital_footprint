@@ -1,4 +1,4 @@
-from main import app, db_sess
+from maine import app, db_sess
 from flask import render_template, redirect
 from data.question_class import Question
 from data.student_class import Student

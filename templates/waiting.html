@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ожидайте...</title>
+</head>
+<body>
+    {% set test = namespace(no_test = 1) %}
+    {% for quiz in current_quizzes if test.no_test %}
+        {% if dl >= (time - quiz.date) %}
+            <button><a href="../quiz/{{quiz.id_quiz}}">Начать тест</a></button>
+            {% set test.no_test = 0 %}
+        {% endif %}
+    {% endfor %}
+    {% if test.no_test %}
+        Ждите, пока выдадут тест
+    {% endif %}
+</body>
+</html>

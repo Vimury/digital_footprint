@@ -31,7 +31,6 @@
 
         function ret(){
             let sum = work_time - check_time();
-            console.log(sum);
             if(sum>=0) {
                 let mins = Math.floor(sum / 60), secs = Math.floor(sum % 60);
                 if($timer[0]) {
@@ -43,8 +42,13 @@
                 HTMLFormElement.prototype.submit.call(forms);
             }
         }
-        ret();
-        let time = setInterval(ret,1000);
+        let x = check_time();
+        console.log(x);
+        if(x >= 0) {
+            ret();
+            let time = setInterval(ret,1000);
+        }
+
     </script>
 </body>
 </html>

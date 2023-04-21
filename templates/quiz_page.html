@@ -11,24 +11,26 @@
         font-size: 20px;
         padding: 3px 5px 3px 5px;
     }
+
 </style>
 <form class="form" action="" method="post">
     <timer class="col-md6 border rounded">
-	</timer>
+    </timer>
     <script>
 		let work_time = {{ timer }};
-		let a = new Date();
+		let a = new Date({{ time }});
 		let $timer = $('timer');
+		let time;
 		function check_time()
 		{
 			let b = new Date();
 			let diff = Math.round((b - a) / 1000);
+			console.log(diff);
 			return diff;
 		}
 
 		function ret(){
 			let sum = work_time - check_time();
-			console.log(sum);
 			if(sum>=0) {
 				let mins = Math.floor(sum / 60), secs = Math.floor(sum % 60);
 				if($timer[0]) {
@@ -40,9 +42,16 @@
 				HTMLFormElement.prototype.submit.call(forms);
 			}
 		}
-		ret();
-		let time = setInterval(ret,1000);
-	</script>
+		let sum = work_time - check_time();
+        console.log(sum);
+		if(sum >= 0) {
+            ret();
+            time = setInterval(ret,1000);
+		} else {
+		    window.location.replace("../");
+		}
+
+    </script>
     {% for i in range(questions_num) %}
     <div>
         <h5>{{query_questions[i].texts}}</h5>
