@@ -323,7 +323,6 @@ def my_quizzes(id_stud):
     student = db_sess.query(Student).filter(Student.id_student == id_stud).first()
     quizzes = db_sess.query(Quiz).filter(Quiz.id_student == id_stud).all()
 
-
     dates = []
     marks = []
     questions = []
@@ -351,6 +350,11 @@ def my_quizzes(id_stud):
 
     return render_template('my_quizzes.html', len=len(quizzes), dates=dates, marks=marks, all_mark=all_mark,
                            questions=questions, answers=answers, comments=comments)
+
+
+@app.route('/profile_students/')
+def pointless():
+    return render_template('profile_students.html')
 
 
 if __name__ == '__main__':
