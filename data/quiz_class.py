@@ -20,7 +20,7 @@ class Quiz(SqlAlchemyBase):
 
 class QuizForm(FlaskForm):
     date = StringField("Дата проведения", validators=[DataRequired()], default=datetime.datetime.now())
-    answers = FieldList(StringField("Ответ:", validators=[]), min_entries=5)
+    answers = FieldList(StringField("Ответ:"), min_entries=5)
     submit = SubmitField("Отправить")
 
 

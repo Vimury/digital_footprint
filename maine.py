@@ -19,7 +19,7 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 
 def main():
-    app.run(host='127.0.0.1', port=8080, debug=True)
+    app.run(host='127.0.0.1', port=8080, debug=True, use_reloader=False)
 
 
 # Надо же эти функции по файлам раскидать
@@ -297,6 +297,7 @@ def dsu():
 
 @app.route('/check_quiz/<id>', methods=['POST', 'GET'])
 def check_quiz(id):
+    db_sess = db_session.create_session()
     quiz = db_sess.query(Quiz).filter(Quiz.id_quiz == id).first()
     student = db_sess.query(Student).filter(Student.id_student == quiz.id_student).first()
     tests = db_sess.query(Test).filter(Test.id_quiz == id).all()
@@ -313,6 +314,43 @@ def check_quiz(id):
         db_sess.commit()
         return redirect("/")
     return render_template("check_quiz.html", name=student.name, answers=answers, questions=quests, form=form)
+
+
+@app.route('/my_quizzes/<id_stud>')
+def my_quizzes(id_stud):
+    db_sess = db_session.create_session()
+
+    student = db_sess.query(Student).filter(Student.id_student == id_stud).first()
+    quizzes = db_sess.query(Quiz).filter(Quiz.id_student == id_stud).all()
+
+
+    dates = []
+    marks = []
+    questions = []
+    answers = []
+    comments = []
+    all_mark = 0
+    for i in quizzes:
+        dates.append(i.date.date())
+        tests = db_sess.query(Test).filter(Test.id_quiz == i.id_quiz).all()
+        sm = 0
+        for j in tests:
+            questions.append(db_sess.query(Question).filter(Question.id_question == j.id_question).first())
+            answers.append(j.stud_answers)
+            comments.append(j.comment)
+            sm += j.mark if type(j.mark) == int else 0
+        all_mark += sm
+        marks.append(sm / 5)
+
+    quizzes_count = []
+    for i in db_sess.query(Quiz).all():
+        if i.date.date() not in quizzes_count:
+            quizzes_count.append(i.date.date())
+
+    all_mark /= (len(quizzes_count) * 5)
+
+    return render_template('my_quizzes.html', len=len(quizzes), dates=dates, marks=marks, all_mark=all_mark,
+                           questions=questions, answers=answers, comments=comments)
 
 
 if __name__ == '__main__':
