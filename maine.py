@@ -10,22 +10,47 @@ from data.student_class import Student, StudentForm
 from data.quiz_class import Quiz, QuizForm, CheckQuizForm
 from data.register_form import RegisterForm
 from data.test_class import Test
+from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 from generate_quiz import generate_full
 
 db_session.global_init("db/digital_footprint.db")
 
 app = Flask(__name__, template_folder='templates')
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 
 def main():
     app.run(host='127.0.0.1', port=8080, debug=True, use_reloader=False)
 
 
-# Надо же эти функции по файлам раскидать
-# А как?
+def check_admin(func):
+    def wrapper(*args, **kwargs):
+        if current_user.is_admin:
+            return func(*args, **kwargs)
+        else:
+            return redirect("/")
+
+    wrapper.__name__ = func.__name__
+    return wrapper
+
+
+@app.route('/logout/')
+@login_required
+def logout():
+    logout_user()
+    return redirect('/login')
+
+
+@login_manager.user_loader
+def load_user(student_id):
+    db_sess = db_session.create_session()
+    return db_sess.query(Student).get(student_id)
+
 
 @app.route("/questions", methods=['GET', 'POST'])
+@check_admin
 def questions():
     query_questions = db_sess.query(Question).all()
     query_groups = db_sess.query(Group)
@@ -34,6 +59,7 @@ def questions():
 
 
 @app.route('/questions/add/<int:id>', methods=['GET', 'POST'])
+@check_admin
 def add_questions(id):
     query_questions = db_sess.query(Question).all()
     query_groups = db_sess.query(Group)
@@ -51,6 +77,7 @@ def add_questions(id):
 
 
 @app.route('/questions/<int:id>', methods=['GET', 'POST'])
+@check_admin
 def edit_questions(id):
     form = QuestionForm()
     theme = 0
@@ -78,6 +105,7 @@ def edit_questions(id):
 
 
 @app.route('/questions_delete/<int:id>', methods=['GET', 'POST'])
+@check_admin
 def questions_delete(id):
     db_sess = db_session.create_session()
     question = db_sess.query(Question).filter(Question.id_question == id).first()
@@ -100,6 +128,7 @@ def waiting(id):
 
 
 @app.route("/students", methods=['GET', 'POST'])
+@check_admin
 def students():
     query_students = db_sess.query(Student).all()
     return render_template('students.html', query_students=query_students,
@@ -107,6 +136,7 @@ def students():
 
 
 @app.route("/choice_student&groups", methods=['GET', 'POST'])
+@check_admin
 def choice_student_groups():
     query_students = db_sess.query(Student).all()
     query_groops = db_sess.query(Group).all()
@@ -122,6 +152,7 @@ def choice_student_groups():
 
 
 @app.route('/students/<int:id>', methods=['GET', 'POST'])
+@check_admin
 def students_edit(id):
     form = StudentForm()
     if request.method == "GET":
@@ -148,6 +179,7 @@ def students_edit(id):
 
 
 @app.route('/students_delete/<int:id>', methods=['GET', 'POST'])
+@check_admin
 def students_delete(id):
     db_sess = db_session.create_session()
     student = db_sess.query(Student).filter(Student.id_student == id).first()
@@ -160,6 +192,7 @@ def students_delete(id):
 
 
 @app.route('/groups', methods=['GET', 'POST'])
+@check_admin
 def groups():
     query_groups = db_sess.query(Group).all()
     form = GroupForm()
@@ -174,6 +207,7 @@ def groups():
 
 
 @app.route('/groups/<int:id>', methods=['GET', 'POST'])
+@check_admin
 def edit_groups(id):
     form = GroupForm()
     if request.method == "GET":
@@ -196,6 +230,7 @@ def edit_groups(id):
 
 
 @app.route('/groups_delete/<int:id>', methods=['GET', 'POST'])
+@check_admin
 def groups_delete(id):
     db_sess = db_session.create_session()
     group = db_sess.query(Group).filter(Group.id_group == id).first()
@@ -233,7 +268,18 @@ def quiz(id):
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        return redirect('/index')
+        db_sess = db_session.create_session()
+        user = db_sess.query(Student).filter(
+            (Student.name == form.name.data) & (Student.birthday == form.birthday.data)).first()
+        if user:
+            login_user(user, remember=form.remember_me.data)
+            if current_user.is_admin:
+                return redirect("/profile_admin")
+            else:
+                return redirect("/profile_students")
+        return render_template('login.html',
+                               message="Неправильный логин или пароль",
+                               form=form)
     return render_template('login.html', title='Авторизация', form=form)
 
 
@@ -264,9 +310,10 @@ def index():
 
 
 @app.route('/add_student', methods=['GET', 'POST'])
+@check_admin
 def add_student():
     form = StudentForm()
-    if form.validate_on_submit():
+    if form.validate_on_submit() and login_user():
         student = Student()
         student.name = form.name.data
         student.birthday = form.date.data
@@ -282,7 +329,6 @@ def add_student():
 @app.route('/dsu')
 def dsu():
     query_questions = db_sess.query(Question).all()
-    query_groups = db_sess.query(Group)
     query_groups = db_sess.query(Group).all()
     form = GroupForm()
     if form.validate_on_submit():
@@ -296,6 +342,7 @@ def dsu():
 
 
 @app.route('/check_quiz/<id>', methods=['POST', 'GET'])
+@check_admin
 def check_quiz(id):
     db_sess = db_session.create_session()
     quiz = db_sess.query(Quiz).filter(Quiz.id_quiz == id).first()
@@ -352,7 +399,13 @@ def my_quizzes(id_stud):
                            questions=questions, answers=answers, comments=comments)
 
 
-@app.route('/profile_students/')
+@app.route('/profile_admin')
+@check_admin
+def admin():
+    return render_template("profile_admin.html")
+
+
+@app.route('/profile_students')
 def pointless():
     return render_template('profile_students.html')
 

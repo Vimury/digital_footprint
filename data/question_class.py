@@ -6,9 +6,10 @@ from wtforms import SubmitField
 from wtforms.validators import DataRequired
 
 from data.db_session import SqlAlchemyBase
+from flask_login import UserMixin
 
 
-class Question(SqlAlchemyBase):
+class Question(SqlAlchemyBase, UserMixin):
     __tablename__ = 'questions'
 
     id_question = sqlalchemy.Column(sqlalchemy.Integer,

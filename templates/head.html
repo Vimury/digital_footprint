@@ -30,6 +30,11 @@
           <li class="nav-item">
             <a class="nav-link" href="#">ЧаВо</a>
           </li>
+            {% if current_user.is_authenticated %}
+            <li class="nav-item">
+            <a class="nav-link" href="/logout">Выход</a>
+            </li>
+            {% endif %}
         </ul>
       </div>
     </nav>
@@ -50,8 +55,15 @@
     </div> -->
 </header>
 <!-- Begin page content -->
+{% if current_user.is_authenticated %}
 <main role="main" class="container">
-    {% block content %}{% endblock %}
+{% block content %}{% endblock %}
 </main>
+{% else %}
+<p>
+<a class="btn btn-primary " href="/register">Зарегистрироваться</a>
+<a class="btn btn-success" href="/login">Войти</a>
+</p>
+{% endif %}
 </body>
 </html>

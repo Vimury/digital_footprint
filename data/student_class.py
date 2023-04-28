@@ -7,9 +7,10 @@ from wtforms import SubmitField
 from wtforms.validators import DataRequired
 
 from data.db_session import SqlAlchemyBase
+from flask_login import UserMixin
 
 
-class Student(SqlAlchemyBase):
+class Student(SqlAlchemyBase, UserMixin):
     __tablename__ = 'students'
 
     id_student = sqlalchemy.Column(sqlalchemy.Integer,
@@ -17,8 +18,12 @@ class Student(SqlAlchemyBase):
     name = sqlalchemy.Column(sqlalchemy.String)
     birthday = sqlalchemy.Column(sqlalchemy.String,
                                  default=str(datetime.datetime.now))
+    is_admin = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
     id_stepik = sqlalchemy.Column(sqlalchemy.String,
-                                 default="НЕТУ")
+                                  default="НЕТУ")
+
+    def get_id(self):
+        return self.id_student
 
 
 class StudentForm(FlaskForm):

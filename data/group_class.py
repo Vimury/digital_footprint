@@ -4,9 +4,10 @@ from data.db_session import SqlAlchemyBase
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, StringField
 from wtforms.validators import DataRequired
+from flask_login import UserMixin
 
 
-class Group(SqlAlchemyBase):
+class Group(SqlAlchemyBase, UserMixin):
     __tablename__ = 'groups'
 
     id_group = sqlalchemy.Column(sqlalchemy.Integer,

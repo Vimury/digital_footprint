@@ -1,9 +1,10 @@
 import sqlalchemy
 
 from data.db_session import SqlAlchemyBase
+from flask_login import UserMixin
 
 
-class Test(SqlAlchemyBase):
+class Test(SqlAlchemyBase, UserMixin):
     __tablename__ = 'tests'
 
     id_test = sqlalchemy.Column(sqlalchemy.Integer,

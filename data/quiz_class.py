@@ -4,10 +4,11 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, FieldList, IntegerField
 from wtforms.validators import DataRequired
 
-from .db_session import SqlAlchemyBase
+from data.db_session import SqlAlchemyBase
+from flask_login import UserMixin
 
 
-class Quiz(SqlAlchemyBase):
+class Quiz(SqlAlchemyBase, UserMixin):
     __tablename__ = 'quizzes'
 
     id_quiz = sqlalchemy.Column(sqlalchemy.Integer,
