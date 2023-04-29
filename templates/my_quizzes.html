@@ -7,13 +7,23 @@
     <h2>Средний балл: {{all_mark}}</h2>
     {% for i in range(len) %}
         <div>
-            <h4>Дата теста: {{dates[i]}}</h4>
-            <p>Балл: {{marks[i]}}</p>
+            <div class="accordion accordion-flush" id="accordion{{i}}">
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#item{{i}}" aria-expanded="false" aria-controls="flush-collapseOne">
+                    Дата теста: {{dates[i]}}
+                  </button>
+                </h2>
+                <div id="item{{i}}" class="accordion-collapse collapse" data-bs-parent="#accordion{{i}}">
+                  <div class="accordion-body"><p>Балл: {{marks[i]}}</p>
             {% for j in range(5) %}
             <h6>Вопрос: {{questions[i].texts}}</h6>
             <p>Ответ: {{answers[i]}}</p>
             <p>Комментарий: {{comments[i]}}</p>
-            {% endfor %}
+            {% endfor %}</div>
+                </div>
+              </div>
+            </div>
         </div>
     {% endfor %}
 {% endif %}

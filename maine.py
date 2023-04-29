@@ -396,7 +396,7 @@ def my_quizzes(id_stud):
     all_mark /= (len(quizzes_count) * 5)
 
     return render_template('my_quizzes.html', len=len(quizzes), dates=dates, marks=marks, all_mark=all_mark,
-                           questions=questions, answers=answers, comments=comments)
+                           questions=questions, answers=answers, comments=comments, title="Мои тесты")
 
 
 @app.route('/profile_admin')
