@@ -130,7 +130,7 @@ def waiting(id):
 @app.route("/students", methods=['GET', 'POST'])
 @check_admin
 def students():
-    query_students = db_sess.query(Student).all()
+    query_students = db_sess.query(Student).filter(Student.is_admin == 0)
     return render_template('students.html', query_students=query_students,
                            title="Студенты")
 
@@ -364,13 +364,11 @@ def check_quiz(id):
     return render_template("check_quiz.html", name=student.name, answers=answers, questions=quests, form=form)
 
 
-@app.route('/my_quizzes/<id_stud>')
-def my_quizzes(id_stud):
+@app.route('/my_quiz')
+def my_quiz():
     db_sess = db_session.create_session()
 
-    student = db_sess.query(Student).filter(Student.id_student == id_stud).first()
-    quizzes = db_sess.query(Quiz).filter(Quiz.id_student == id_stud).all()
-
+    quizzes = db_sess.query(Quiz).filter(Quiz.id_student == current_user.id_student).all()
     dates = []
     marks = []
     questions = []
