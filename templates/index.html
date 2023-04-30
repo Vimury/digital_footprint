@@ -1,12 +1,11 @@
 {% extends "head.html" %}
 <title>{% block title %} {{title}} {% endblock title %}</title>
 {% block content %}
-{% if current_user.is_authenticated %}
-Сюда незачем идти<br>
+{% if current_user.is_authenticated %}<br>
     {% if current_user.is_admin %}
         <a class="btn btn-primary " href="/profile_admin">Профиль</a>
     {% else %}
-        <a class="btn btn-primary " href="/profile_admin">Профиль</a>
+        <a class="btn btn-primary " href="/profile_students">Профиль</a>
     {% endif %}
 {% else %}
 <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
