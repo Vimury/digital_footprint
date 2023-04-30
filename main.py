@@ -364,7 +364,7 @@ def check_quiz(id):
     return render_template("check_quiz.html", name=student.name, answers=answers, questions=quests, form=form)
 
 
-@app.route('/my_quiz')
+@app.route('/my_quizzes')
 def my_quiz():
     db_sess = db_session.create_session()
 
