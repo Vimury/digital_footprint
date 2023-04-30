@@ -138,12 +138,13 @@ def students():
 @app.route("/choice_student&groups", methods=['GET', 'POST'])
 @check_admin
 def choice_student_groups():
-    query_students = db_sess.query(Student).all()
+    query_students = db_sess.query(Student).filter(Student.is_admin == 0)
     query_groops = db_sess.query(Group).all()
     if request.method == "POST":
         groups = [i.id_group for i in query_groops if request.form.get(str(i.label))]
         if groups:
-            students = [i.id_student for i in query_students if request.form.get(str(i.name) + str(i.birthday))]
+            students = [i.id_student for i in query_students if
+                        request.form.get(str(i.name) + str(i.birthday))]
             generate_full(students, groups)
             return redirect('/')
 
