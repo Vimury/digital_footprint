@@ -40,7 +40,7 @@ def check_admin(func):
 @login_required
 def logout():
     logout_user()
-    return redirect('/login')
+    return redirect('/')
 
 
 @login_manager.user_loader

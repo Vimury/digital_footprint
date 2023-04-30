@@ -17,9 +17,9 @@
                 <div id="item{{i}}" class="accordion-collapse collapse" data-bs-parent="#accordion{{i}}">
                   <div class="accordion-body"><p>Балл: {{marks[i]}}</p>
             {% for j in range(5) %}
-            <h6>Вопрос: {{questions[i].texts}}</h6>
-            <p>Ответ: {{answers[i]}}</p>
-            <p>Комментарий: {{comments[i]}}</p>
+            <h6>Вопрос: {{questions[j].texts}}</h6>
+            <p>Ответ: {{answers[j]}}</p>
+            <p>Комментарий: {{comments[j]}}</p>
             {% endfor %}</div>
                 </div>
               </div>
