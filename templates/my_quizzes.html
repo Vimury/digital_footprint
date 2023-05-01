@@ -6,25 +6,33 @@
 {% else %}
     <h2>Средний балл: {{all_mark}}</h2>
     {% for i in range(len) %}
-        <div>
             <div class="accordion accordion-flush" id="accordion{{i}}">
               <div class="accordion-item">
                 <h2 class="accordion-header">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#item{{i}}" aria-expanded="false" aria-controls="flush-collapseOne">
-                    Дата теста: {{dates[i]}}
+                    Дата теста: {{dates[i]}} <br>Балл: {{marks[i]}}
                   </button>
                 </h2>
                 <div id="item{{i}}" class="accordion-collapse collapse" data-bs-parent="#accordion{{i}}">
-                  <div class="accordion-body"><p>Балл: {{marks[i]}}</p>
+                  <div class="accordion-body">
             {% for j in range(5) %}
-            <h6>Вопрос: {{questions[j].texts}}</h6>
-            <p>Ответ: {{answers[j]}}</p>
-            <p>Комментарий: {{comments[j]}}</p>
-            {% endfor %}</div>
+                {% if question_marks[i * 5 + j] == 1 %}
+                    <h6 style="background:#34C924; border-style: solid; border-radius: 0 10px;">ㅤВопрос: {{questions[i * 5 + j].texts}}
+                    <p style="background:#34C924">ㅤОтвет: {{answers[i * 5 + j]}}
+                    <p style="background:#34C924">ㅤКомментарий: {{comments[i * 5 + j]}}</p>
+                {% elif question_marks[i * 5 + j] == 0.5 %}
+                    <h6 style="background:#ADFF2F; border-style: solid; border-radius: 0 10px;">ㅤВопрос: {{questions[i * 5 + j].texts}}
+                    <p style="background:#ADFF2F">ㅤОтвет: {{answers[i * 5 + j]}}
+                    <p style="background:#ADFF2F">ㅤКомментарий: {{comments[i * 5 + j]}}</p>
+                {% else %}
+                    <h6 style="background:#F84030; border-style: solid; border-radius: 0 10px;">ㅤВопрос: {{questions[i * 5 + j].texts}}
+                    <p style="background:#F44030">ㅤОтвет: {{answers[i * 5 + j]}}
+                    <p style="background:#F44030">ㅤКомментарий: {{comments[i * 5 + j]}}</p>
+                {% endif %}
+            {% endfor %}
                 </div>
               </div>
             </div>
-        </div>
     {% endfor %}
 {% endif %}
 
