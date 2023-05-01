@@ -354,7 +354,7 @@ def check_quiz(id):
     answers = []
     for i in tests:
         quests.append(db_sess.query(Question).filter(Question.id_question == i.id_question).first())
-        answers.append(i.stud_answers)
+        answers.append(i.stud_answers if i.stud_answers else "")
     if form.validate_on_submit():
         for i in range(5):
             tests[i].mark = form.marks.data[i]

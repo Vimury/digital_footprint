@@ -5,7 +5,7 @@
     {% for i in range(5) %}
     <div>
         <h5>{{questions[i].texts}}</h5>
-        <p>{{answers[i]}}</p>
+        <p>Ответ: {{answers[i]}}</p>
         {{ form.hidden_tag() }}
         <p>
             {{ form.comments[i].label }}<br>
@@ -15,7 +15,13 @@
                 {{ error }}
                 </p>
             {% endfor %}
-            {{ form.marks[i].label }}<br>
+            {{ form.marks[i].label }}
+            <select style="border-style: none; display: table-row;">
+                    <option style="display:table-cell" value=1>+</option>
+                    <option style="display:table-cell" value=0.5>+-</option>
+                    <option style="display:table-cell" value=0.5>-+</option>
+                    <option style="display:table-cell" value=0 selected>-</option></select>
+
             {{ form.marks[i](class="form-control") }}<br>
             {% for error in form.marks[i].errors %}
                 <p class="alert alert-danger" role="alert">
