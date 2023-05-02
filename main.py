@@ -304,6 +304,11 @@ def register():
 @app.route("/", methods=['GET', 'POST'])
 @app.route("/index")
 def index():
+    if current_user.is_authenticated:
+        if current_user.is_admin:
+            return render_template('index.html')
+        else:
+            return redirect("/my_quiz")
     return render_template('index.html')
 
 
