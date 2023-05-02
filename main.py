@@ -357,7 +357,7 @@ def check_quiz(id):
         answers.append(i.stud_answers if i.stud_answers else "")
     if form.validate_on_submit():
         for i in range(5):
-            tests[i].mark = form.marks.data[i]
+            tests[i].mark = request.form.get("flexRadioDefault" + str(i))
             tests[i].comment = form.comments.data[i]
         db_sess.commit()
         return redirect("/")

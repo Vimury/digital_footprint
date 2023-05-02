@@ -4,7 +4,7 @@
 <form class="form" action="" method="post">
     {% for i in range(5) %}
     <div>
-        <h5>{{questions[i].texts}}</h5>
+        <h5>{{i + 1}}. {{questions[i].texts}}</h5>
         <p>Ответ: {{answers[i]}}</p>
         {{ form.hidden_tag() }}
         <p>
@@ -15,19 +15,28 @@
                 {{ error }}
                 </p>
             {% endfor %}
-            {{ form.marks[i].label }}
-            <select style="border-style: none; display: table-row;">
-                    <option style="display:table-cell" value=1>+</option>
-                    <option style="display:table-cell" value=0.5>+-</option>
-                    <option style="display:table-cell" value=0.5>-+</option>
-                    <option style="display:table-cell" value=0 selected>-</option></select>
+            <div class="block-right">
+                    <div class="col-md6">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}" id="1.{{i}}" value=1.0>
+                        <label class="form-check-label" for="1.{{i}}">
+                            +
+                        </label>
+                        <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}" id="2.{{i}}" value=0.5>
+                        <label class="form-check-label" for="2.{{i}}">
+                            +-
+                        </label>
+                        <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}" id="3.{{i}}" value=0.5>
+                        <label class="form-check-label" for="3.{{i}}">
+                            -+
+                        </label>
+                        <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}" id="4.{{i}}" value=0 checked>
+                        <label class="form-check-label" for="4.{{i}}">
+                            -
+                        </label>
+                    </div>
+                    <br>
 
-            {{ form.marks[i](class="form-control") }}<br>
-            {% for error in form.marks[i].errors %}
-                <p class="alert alert-danger" role="alert">
-                {{ error }}
-                </p>
-            {% endfor %}
+
         </p>
     </div>
     {% endfor %}

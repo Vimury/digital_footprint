@@ -27,5 +27,4 @@ class QuizForm(FlaskForm):
 
 class CheckQuizForm(FlaskForm):
     comments = FieldList(StringField("Комментарий:"), min_entries=5)
-    marks = FieldList(FloatField("Оценка:"), validators=[DataRequired()], min_entries=5)
     submit = SubmitField("Оценить")
