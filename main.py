@@ -365,7 +365,7 @@ def check_quizzes():
     return render_template('check_quizzes.html', len=len(dates), dates=dates, title="Проверка тестов", quizzes=quizzes)
 
 
-@app.route('/my_quizzes')
+@app.route('/my_quiz')
 def my_quiz():
     db_sess = db_session.create_session()
 
@@ -378,7 +378,7 @@ def my_quiz():
     comments = []
     all_mark = 0
     for i in quizzes:
-        dates.append(i.date.date())
+        dates.append(i.date)
         tests = db_sess.query(Test).filter(Test.id_quiz == i.id_quiz).all()
         sm = 0
         for test in tests:
@@ -392,8 +392,8 @@ def my_quiz():
 
     quizzes_count = []
     for i in db_sess.query(Quiz).all():
-        if i.date.date() not in quizzes_count:
-            quizzes_count.append(i.date.date())
+        if i not in quizzes_count:
+            quizzes_count.append(i.date)
 
     all_mark /= (len(quizzes_count) * 5)
     print(question_marks)
