@@ -1,0 +1,32 @@
+{% extends "head.html" %}
+<title>{% block title %} {{title}} {% endblock title %}</title>
+{% block content %}
+{% if len == 0 %}
+<p>Вы ещё выдали ни одного теста</p>
+{% else %}
+{% for i in range(len) %}
+<div class="accordion accordion-flush" id="accordion{{i}}">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#item{{i}}" aria-expanded="false" aria-controls="flush-collapseOne"
+                    style="text-color: black">
+                Дата теста: {{dates[i]}}
+            </button>
+        </h2>
+        <div id="item{{i}}" class="accordion-collapse collapse" data-bs-parent="#accordion{{i}}">
+            <div class="accordion-body">
+                {% for j in quizzes[i] %}
+                {{j[1]}}
+                <a href="/check_quiz/{{j[0]}}" class="btn btn-info">
+                    Проверить
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+{% endblock %}

@@ -135,20 +135,20 @@ def students():
                            title="Студенты")
 
 
-@app.route("/choice_student&groups", methods=['GET', 'POST'])
+@app.route("/make_test", methods=['GET', 'POST'])
 @check_admin
 def choice_student_groups():
     query_students = db_sess.query(Student).filter(Student.is_admin == 0)
-    query_groops = db_sess.query(Group).all()
+    query_groups = db_sess.query(Group).all()
     if request.method == "POST":
-        groups = [i.id_group for i in query_groops if request.form.get(str(i.label))]
+        groups = [i.id_group for i in query_groups if request.form.get(str(i.label))]
         if groups:
             students = [i.id_student for i in query_students if
                         request.form.get(str(i.name) + str(i.birthday))]
             generate_full(students, groups)
             return redirect('/')
 
-    return render_template('MDmd.html', query_students=query_students, query_groops=query_groops,
+    return render_template('MDmd.html', query_students=query_students, query_groups=query_groups,
                            title="Выбрать студентов")
 
 
@@ -274,10 +274,7 @@ def login():
             (Student.name == form.name.data) & (Student.birthday == form.birthday.data)).first()
         if user:
             login_user(user, remember=form.remember_me.data)
-            if current_user.is_admin:
-                return redirect("/profile_admin")
-            else:
-                return redirect("/profile_students")
+            return redirect("/")
         return render_template('login.html',
                                message="Неправильный логин или пароль",
                                form=form)
@@ -327,21 +324,6 @@ def add_student():
                            title="Студенты", form=form)
 
 
-@app.route('/dsu')
-def dsu():
-    query_questions = db_sess.query(Question).all()
-    query_groups = db_sess.query(Group).all()
-    form = GroupForm()
-    if form.validate_on_submit():
-        group = Group()
-        group.label = form.label.data
-        db_sess.add(group)
-        db_sess.commit()
-        return redirect('/dsu')
-    return render_template('dsu.html', query_questions=query_questions, query_groups=query_groups,
-                           title="Список тем и вопросов", form=form)
-
-
 @app.route('/check_quiz/<id>', methods=['POST', 'GET'])
 @check_admin
 def check_quiz(id):
@@ -362,6 +344,25 @@ def check_quiz(id):
         db_sess.commit()
         return redirect("/")
     return render_template("check_quiz.html", name=student.name, answers=answers, questions=quests, form=form)
+
+
+@app.route('/check_quiz', methods=['POST', 'GET'])
+@check_admin
+def check_quizzes():
+    db_sess = db_session.create_session()
+
+    quizzes = []
+    dates = []
+    for i in db_sess.query(Quiz).all():
+        date = i.date
+        if date not in dates:
+            dates.append(date)
+            quizzes.append([])
+            for j in db_sess.query(Quiz).filter(Quiz.date == i.date):
+                quizzes[-1].append(
+                    (j.id_quiz, db_sess.query(Student).filter(Student.id_student == j.id_student).first().name))
+
+    return render_template('check_quizzes.html', len=len(dates), dates=dates, title="Проверка тестов", quizzes=quizzes)
 
 
 @app.route('/my_quizzes')
@@ -400,17 +401,6 @@ def my_quiz():
     return render_template('my_quizzes.html', len=len(quizzes), dates=dates, marks=marks, all_mark=all_mark,
                            questions=questions, answers=answers, comments=comments, title="Мои тесты",
                            question_marks=question_marks)
-
-
-@app.route('/profile_admin')
-@check_admin
-def admin():
-    return render_template("profile_admin.html")
-
-
-@app.route('/profile_students')
-def pointless():
-    return render_template('profile_students.html')
 
 
 if __name__ == '__main__':

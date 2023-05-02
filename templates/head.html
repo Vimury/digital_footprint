@@ -29,19 +29,38 @@
                     <a class="nav-link" href="/">Главная</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Тесты</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="#">ЧаВо</a>
                 </li>
+
                 {% if current_user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/logout">Выход</a>
-                </li>
+                    {% if current_user.is_admin %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/students">Студенты</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/groups">Темы</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/questions">Вопросы</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/make_test">Создать тест</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/check_quiz">Проверить тесты</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/my_quizzes">Мои тесты</a>
+                    </li>
+                {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Выход</a>
+                    </li>
                 {% endif %}
             </ul>
         </div>
-        <div style="margin-right:10px; font-size:30px" >{{ current_user.name }}</div>
+        <div style="margin-right:10px; font-size:30px">{{ current_user.name }}</div>
     </nav>
     <!-- <div class="pos-f-t">
         <div class="collapse" id="navbarToggleExternalContent">
