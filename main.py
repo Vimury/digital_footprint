@@ -58,6 +58,11 @@ def questions():
                            title="Вопросы")
 
 
+@app.template_filter('strftime')
+def _jinja2_filter_datetime(date):
+    return datetime.datetime.strptime(date, "%Y-%m-%d %H:%M")
+
+
 @app.route('/questions/add/<int:id>', methods=['GET', 'POST'])
 @check_admin
 def add_questions(id):
@@ -117,12 +122,12 @@ def questions_delete(id):
     return redirect('/questions')
 
 
-@app.route('/waiting/<int:id>')
-def waiting(id):
+@app.route('/waiting')
+def waiting():
     time = datetime.datetime.now()
     dl = datetime.timedelta(minutes=5, seconds=30)
     db_sess = db_session.create_session()
-    current_quizzes = db_sess.query(Quiz).filter_by(id_student=id).all()
+    current_quizzes = db_sess.query(Quiz).filter_by(id_student=current_user.id_student).all()
     return render_template('waiting.html', current_quizzes=current_quizzes,
                            time=time, dl=dl)
 
@@ -247,7 +252,7 @@ def groups_delete(id):
 def quiz(id):
     db_sess = db_session.create_session()
     query_quiz = db_sess.query(Quiz).filter(Quiz.id_quiz == id).first()
-    pytime = query_quiz.date
+    pytime = datetime.datetime.strptime(query_quiz.date, "%Y-%m-%d %H:%M")
     js_time = int(time.mktime(pytime.timetuple())) * 1000
     tests = db_sess.query(Test).filter(Test.id_quiz == id).all()
     quests = []
