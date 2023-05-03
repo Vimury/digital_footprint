@@ -15,14 +15,14 @@
             </button>
         </h2>
         <div id="item{{i}}" class="accordion-collapse collapse" data-bs-parent="#accordion{{i}}">
-            <div class="accordion-body">
-                {% for j in quizzes[i] %}
-                {{j[1]}}
-                <a href="/check_quiz/{{j[0]}}" class="btn btn-info">
-                    Проверить
-                </a>
-                {% endfor %}
-            </div>
+            {% for j in quizzes[i] %}
+                <div class="accordion-body">
+                    {{j[1]}}
+                    <a href="/check_quiz/{{j[0]}}" class="btn btn-info">
+                        Проверить
+                    </a>
+                </div>
+            {% endfor %}
         </div>
 
     </div>
