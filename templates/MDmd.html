@@ -12,8 +12,8 @@
 <form class="login_form" method="post">
 <div class="block-left">
     {% for user in query_students %}
-        <div class="col-md6 border rounded">
-            <h2>{{user.name}}</h2>
+        <div class="col-md6 border rounded" style="padding-left: 4px;">
+            <h3>{{user.name}}</h3>
             {{user.birthday}}
             <div class="form-check" align="right">
                 <input class="form-check-input" name="{{user.name}}{{user.birthday}}" type="checkbox" value="{{user.id_student}}" id={{user.id_student}}>
@@ -25,8 +25,8 @@
 </div>
 <div class="block-right">
     {% for user in query_groups %}
-        <div class="col-md6 border rounded">
-            <h2>{{user.label}}</h2>
+        <div class="col-md6 border rounded" style="padding-left: 4px;">
+            <h3>{{user.label}}</h3>
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id={{user.id_group}} name="{{user.label}}">
             </div>
