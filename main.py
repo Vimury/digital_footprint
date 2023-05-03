@@ -12,6 +12,7 @@ from data.register_form import RegisterForm
 from data.test_class import Test
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 from generate_quiz import generate_full
+import math
 
 db_session.global_init("db/digital_footprint.db")
 
@@ -311,7 +312,7 @@ def register():
 def index():
     if current_user.is_authenticated:
         if current_user.is_admin:
-            return render_template('index.html')
+            return redirect("/results")
         else:
             return redirect("/my_quiz")
     return render_template('index.html')
@@ -413,7 +414,60 @@ def my_quiz():
                            question_marks=question_marks)
 
 
+@app.template_filter('get_results')
+def get_results(args):
+    id_student = args[0]
+    date = args[1]
+    quiz = db_sess.query(Quiz).filter((Quiz.id_student == id_student) & (Quiz.date == date)).first()
+    if quiz:
+        mark = 0
+        for i in db_sess.query(Test).filter(Test.id_quiz == quiz.id_quiz).all():
+            if i.mark:
+                mark += i.mark
+        return mark
+    return 0
+
+
+@app.template_filter('get_outcome')
+def get_results(args):
+    id_student = args[0]
+    count = args[1]
+    mark = 0
+    for j in db_sess.query(Quiz).filter(Quiz.id_student == id_student).all():
+        for i in db_sess.query(Test).filter(
+                Test.id_quiz == j.id_quiz):
+            if i.mark:
+                mark += i.mark
+    return round(mark / count, 2)
+
+
+@app.template_filter('get_mark')
+def get_results(args):
+    id_student = args[0]
+    count = args[1]
+    mark = 0
+    for j in db_sess.query(Quiz).filter(Quiz.id_student == id_student).all():
+        for i in db_sess.query(Test).filter(
+                Test.id_quiz == j.id_quiz):
+            if i.mark:
+                mark += i.mark
+    return math.ceil(mark / count)
+
+
+@app.route('/results')
+@check_admin
+def table_view():
+    dates = []
+    for i in db_sess.query(Quiz).all():
+        date = i.date
+        if date not in dates:
+            dates.append(date)
+
+    students = db_sess.query(Student).filter(Student.is_admin != 1).all()
+
+    return render_template('results.html', dates=dates, students=students, len=len(students), len_dates=len(dates))
+
+
 if __name__ == '__main__':
     db_sess = db_session.create_session()
-    # generate_full([1, 2], [1])
     main()
