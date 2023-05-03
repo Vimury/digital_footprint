@@ -18,21 +18,22 @@
                   <div class="accordion-body">
             {% for j in range(5) %}
                 {% if question_marks[i * 5 + j] == 1 %}
-                    <h6 style="background:#34C924; border-style: solid; border-radius: 0 10px;">ㅤВопрос: {{questions[i * 5 + j].texts}}
-                    <p style="background:#34C924">ㅤОтвет: {{answers[i * 5 + j]}}
-                    <p style="background:#34C924">ㅤКомментарий: {{comments[i * 5 + j]}}</p>
+                    <h6 style="background:#d2f4ea; border-style: none; border-radius: 10px;">ㅤВопрос: {{questions[i * 5 + j].texts}}
+                    <p style="background:#d2f4ea">ㅤОтвет: {{answers[i * 5 + j]}}
+                    <p style="background:#d2f4ea">ㅤКомментарий: {{comments[i * 5 + j]}}</p></h6>
                 {% elif question_marks[i * 5 + j] == 0.5 %}
-                    <h6 style="background:#ADFF2F; border-style: solid; border-radius: 0 10px;">ㅤВопрос: {{questions[i * 5 + j].texts}}
-                    <p style="background:#ADFF2F">ㅤОтвет: {{answers[i * 5 + j]}}
-                    <p style="background:#ADFF2F">ㅤКомментарий: {{comments[i * 5 + j]}}</p>
+                    <h6 style="background:#ffe5d0; border-style: none; border-radius: 10px;">ㅤВопрос: {{questions[i * 5 + j].texts}}
+                    <p style="background:#ffe5d0">ㅤОтвет: {{answers[i * 5 + j]}}
+                    <p style="background:#ffe5d0">ㅤКомментарий: {{comments[i * 5 + j]}}</p></h6>
                 {% else %}
-                    <h6 style="background:#F84030; border-style: solid; border-radius: 0 10px;">ㅤВопрос: {{questions[i * 5 + j].texts}}
-                    <p style="background:#F44030">ㅤОтвет: {{answers[i * 5 + j]}}
-                    <p style="background:#F44030">ㅤКомментарий: {{comments[i * 5 + j]}}</p>
+                    <h6 style="background:#F8D7DA; border-style: none; border-radius: 10px;">ㅤВопрос: {{questions[i * 5 + j].texts}}
+                    <p style="background:#F8D7DA">ㅤОтвет: {{answers[i * 5 + j]}}
+                    <p style="background:#F8D7DA">ㅤКомментарий: {{comments[i * 5 + j]}}</p></h6>
                 {% endif %}
             {% endfor %}
                 </div>
               </div>
+
             </div>
     {% endfor %}
 {% endif %}

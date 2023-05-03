@@ -13,8 +13,8 @@ class Quiz(SqlAlchemyBase, UserMixin):
 
     id_quiz = sqlalchemy.Column(sqlalchemy.Integer,
                                 primary_key=True, autoincrement=True)
-    date = sqlalchemy.Column(sqlalchemy.DateTime,
-                             default=datetime.datetime.now)
+    date = sqlalchemy.Column(sqlalchemy.String,
+                             default=datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
     id_student = sqlalchemy.Column(sqlalchemy.Integer,
                                    sqlalchemy.ForeignKey("students.id_student"))
 
@@ -27,5 +27,4 @@ class QuizForm(FlaskForm):
 
 class CheckQuizForm(FlaskForm):
     comments = FieldList(StringField("Комментарий:"), min_entries=5)
-    marks = FieldList(FloatField("Оценка:"), validators=[DataRequired()], min_entries=5)
     submit = SubmitField("Оценить")

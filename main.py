@@ -58,6 +58,11 @@ def questions():
                            title="Вопросы")
 
 
+@app.template_filter('strftime')
+def _jinja2_filter_datetime(date):
+    return datetime.datetime.strptime(date, "%Y-%m-%d %H:%M")
+
+
 @app.route('/questions/add/<int:id>', methods=['GET', 'POST'])
 @check_admin
 def add_questions(id):
@@ -117,12 +122,12 @@ def questions_delete(id):
     return redirect('/questions')
 
 
-@app.route('/waiting/<int:id>')
-def waiting(id):
+@app.route('/waiting')
+def waiting():
     time = datetime.datetime.now()
     dl = datetime.timedelta(minutes=5, seconds=30)
     db_sess = db_session.create_session()
-    current_quizzes = db_sess.query(Quiz).filter_by(id_student=id).all()
+    current_quizzes = db_sess.query(Quiz).filter_by(id_student=current_user.id_student).all()
     return render_template('waiting.html', current_quizzes=current_quizzes,
                            time=time, dl=dl)
 
@@ -135,20 +140,20 @@ def students():
                            title="Студенты")
 
 
-@app.route("/choice_student&groups", methods=['GET', 'POST'])
+@app.route("/make_test", methods=['GET', 'POST'])
 @check_admin
 def choice_student_groups():
     query_students = db_sess.query(Student).filter(Student.is_admin == 0)
-    query_groops = db_sess.query(Group).all()
+    query_groups = db_sess.query(Group).all()
     if request.method == "POST":
-        groups = [i.id_group for i in query_groops if request.form.get(str(i.label))]
+        groups = [i.id_group for i in query_groups if request.form.get(str(i.label))]
         if groups:
             students = [i.id_student for i in query_students if
                         request.form.get(str(i.name) + str(i.birthday))]
             generate_full(students, groups)
             return redirect('/')
 
-    return render_template('MDmd.html', query_students=query_students, query_groops=query_groops,
+    return render_template('MDmd.html', query_students=query_students, query_groups=query_groups,
                            title="Выбрать студентов")
 
 
@@ -247,7 +252,7 @@ def groups_delete(id):
 def quiz(id):
     db_sess = db_session.create_session()
     query_quiz = db_sess.query(Quiz).filter(Quiz.id_quiz == id).first()
-    pytime = query_quiz.date
+    pytime = datetime.datetime.strptime(query_quiz.date, "%Y-%m-%d %H:%M")
     js_time = int(time.mktime(pytime.timetuple())) * 1000
     tests = db_sess.query(Test).filter(Test.id_quiz == id).all()
     quests = []
@@ -274,10 +279,7 @@ def login():
             (Student.name == form.name.data) & (Student.birthday == form.birthday.data)).first()
         if user:
             login_user(user, remember=form.remember_me.data)
-            if current_user.is_admin:
-                return redirect("/profile_admin")
-            else:
-                return redirect("/profile_students")
+            return redirect("/")
         return render_template('login.html',
                                message="Неправильный логин или пароль",
                                form=form)
@@ -307,6 +309,11 @@ def register():
 @app.route("/", methods=['GET', 'POST'])
 @app.route("/index")
 def index():
+    if current_user.is_authenticated:
+        if current_user.is_admin:
+            return render_template('index.html')
+        else:
+            return redirect("/my_quiz")
     return render_template('index.html')
 
 
@@ -327,21 +334,6 @@ def add_student():
                            title="Студенты", form=form)
 
 
-@app.route('/dsu')
-def dsu():
-    query_questions = db_sess.query(Question).all()
-    query_groups = db_sess.query(Group).all()
-    form = GroupForm()
-    if form.validate_on_submit():
-        group = Group()
-        group.label = form.label.data
-        db_sess.add(group)
-        db_sess.commit()
-        return redirect('/dsu')
-    return render_template('dsu.html', query_questions=query_questions, query_groups=query_groups,
-                           title="Список тем и вопросов", form=form)
-
-
 @app.route('/check_quiz/<id>', methods=['POST', 'GET'])
 @check_admin
 def check_quiz(id):
@@ -357,14 +349,33 @@ def check_quiz(id):
         answers.append(i.stud_answers if i.stud_answers else "")
     if form.validate_on_submit():
         for i in range(5):
-            tests[i].mark = form.marks.data[i]
+            tests[i].mark = request.form.get("flexRadioDefault" + str(i))
             tests[i].comment = form.comments.data[i]
         db_sess.commit()
         return redirect("/")
     return render_template("check_quiz.html", name=student.name, answers=answers, questions=quests, form=form)
 
 
-@app.route('/my_quizzes')
+@app.route('/check_quiz', methods=['POST', 'GET'])
+@check_admin
+def check_quizzes():
+    db_sess = db_session.create_session()
+
+    quizzes = []
+    dates = []
+    for i in db_sess.query(Quiz).all():
+        date = i.date
+        if date not in dates:
+            dates.append(date)
+            quizzes.append([])
+            for j in db_sess.query(Quiz).filter(Quiz.date == i.date):
+                quizzes[-1].append(
+                    (j.id_quiz, db_sess.query(Student).filter(Student.id_student == j.id_student).first().name))
+
+    return render_template('check_quizzes.html', len=len(dates), dates=dates, title="Проверка тестов", quizzes=quizzes)
+
+
+@app.route('/my_quiz')
 def my_quiz():
     db_sess = db_session.create_session()
 
@@ -377,7 +388,7 @@ def my_quiz():
     comments = []
     all_mark = 0
     for i in quizzes:
-        dates.append(i.date.date())
+        dates.append(i.date)
         tests = db_sess.query(Test).filter(Test.id_quiz == i.id_quiz).all()
         sm = 0
         for test in tests:
@@ -391,8 +402,8 @@ def my_quiz():
 
     quizzes_count = []
     for i in db_sess.query(Quiz).all():
-        if i.date.date() not in quizzes_count:
-            quizzes_count.append(i.date.date())
+        if i not in quizzes_count:
+            quizzes_count.append(i.date)
 
     all_mark /= (len(quizzes_count) * 5)
     print(question_marks)
@@ -400,17 +411,6 @@ def my_quiz():
     return render_template('my_quizzes.html', len=len(quizzes), dates=dates, marks=marks, all_mark=all_mark,
                            questions=questions, answers=answers, comments=comments, title="Мои тесты",
                            question_marks=question_marks)
-
-
-@app.route('/profile_admin')
-@check_admin
-def admin():
-    return render_template("profile_admin.html")
-
-
-@app.route('/profile_students')
-def pointless():
-    return render_template('profile_students.html')
 
 
 if __name__ == '__main__':
