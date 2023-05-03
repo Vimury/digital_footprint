@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/design.css')}"/>
 
 
-    <title>{% block title %} Тестирующая система {% endblock title %}</title>
+    <title>{% block title %} Цифровой след студента {% endblock title %}</title>
 </head>
 <body>
 <header>
@@ -87,10 +87,17 @@
     {% block content %}{% endblock %}
 </main>
 {% else %}
-<p>
-    <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
-    <a class="btn btn-success" href="/login">Войти</a>
-</p>
+<div style="display: flex; position: fixed; height: 100%; width: 100%; flex-direction: column;
+                        align-items: center; justify-content: center;">
+        <div style="width: 200px;">
+            <a class="btn btn-primary " href="/register" style="width:100%; margin-bottom:10px;" >Зарегистрироваться</a>
+        </div>
+        <div style="width: 200px;">
+            <a class="btn btn-success" href="/login" style="width:100%; margin-bottom:10px;">Войти</a>
+        </div>
+    </div>
+
+</div>
 {% endif %}
 </body>
 </html>
