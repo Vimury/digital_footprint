@@ -10,8 +10,8 @@
         <h2 class="accordion-header">
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#item{{loop.index}}" aria-expanded="false" aria-controls="flush-collapseOne">
             {{user.label}}
-            <a href="/questions/add/{{user.id_group}}" class="btn btn-primary" style="margin-left: 4px;">Добавить вопрос</a></label>
           </button>
+          <a href="/questions/add/{{user.id_group}}" class="btn btn-primary">Добавить вопрос</a>
         </h2>
         <div id="item{{loop.index}}" class="accordion-collapse collapse" data-bs-parent="#accordion{{loop.index}}">
           <ol>
