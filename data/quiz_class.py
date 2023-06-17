@@ -13,8 +13,7 @@ class Quiz(SqlAlchemyBase, UserMixin):
 
     id_quiz = sqlalchemy.Column(sqlalchemy.Integer,
                                 primary_key=True, autoincrement=True)
-    date = sqlalchemy.Column(sqlalchemy.String,
-                             default=datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
+    date = sqlalchemy.Column(sqlalchemy.String)
     id_student = sqlalchemy.Column(sqlalchemy.Integer,
                                    sqlalchemy.ForeignKey("students.id_student"))
 

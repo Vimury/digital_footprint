@@ -1,41 +1,45 @@
 {% extends "head.html" %}
-<title>{% block title %} {{title}} {% endblock title %}</title>
 {% block content %}
 {% if len == 0 %}
-    <p>Вы ещё не писали не одного теста</p>
+<p>Вы ещё не писали не одного теста</p>
 {% else %}
-    <h2>Средний балл: {{all_mark}}</h2>
-    {% for i in range(len) %}
-            <div class="accordion accordion-flush" id="accordion{{i}}">
-              <div class="accordion-item">
-                <h2 class="accordion-header">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#item{{i}}" aria-expanded="false" aria-controls="flush-collapseOne"
-                  style="text-color: black">
-                    Дата теста: {{dates[i]}} <br>Балл: {{marks[i]}}
-                  </button>
-                </h2>
-                <div id="item{{i}}" class="accordion-collapse collapse" data-bs-parent="#accordion{{i}}">
-                  <div class="accordion-body">
-            {% for j in range(5) %}
+<h2>Средний балл: {{all_mark}}</h2>
+{% for i in range(len) %}
+<div class="accordion accordion-flush" id="accordion{{i}}">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#item{{i}}" aria-expanded="false" aria-controls="flush-collapseOne"
+                    style="text-color: black">
+                Дата теста: {{dates[i]}} <br>Балл: {{marks[i]}}
+            </button>
+        </h2>
+        <div id="item{{i}}" class="accordion-collapse collapse" data-bs-parent="#accordion{{i}}">
+            <div class="accordion-body">
+                {% for j in range(5) %}
                 {% if question_marks[i * 5 + j] == 1 %}
-                    <h6 style="background:#d2f4ea; border-style: none; border-radius: 10px;">ㅤВопрос: {{questions[i * 5 + j].texts}}
+                <h6 style="background:#d2f4ea; border-style: none; border-radius: 10px;">ㅤВопрос: {{questions[i * 5 +
+                    j].texts}}
                     <p style="background:#d2f4ea">ㅤОтвет: {{answers[i * 5 + j]}}
                     <p style="background:#d2f4ea">ㅤКомментарий: {{comments[i * 5 + j]}}</p></h6>
                 {% elif question_marks[i * 5 + j] == 0.5 %}
-                    <h6 style="background:#ffe5d0; border-style: none; border-radius: 10px;">ㅤВопрос: {{questions[i * 5 + j].texts}}
+                <h6 style="background:#ffe5d0; border-style: none; border-radius: 10px;">ㅤВопрос: {{questions[i * 5 +
+                    j].texts}}
                     <p style="background:#ffe5d0">ㅤОтвет: {{answers[i * 5 + j]}}
                     <p style="background:#ffe5d0">ㅤКомментарий: {{comments[i * 5 + j]}}</p></h6>
                 {% else %}
-                    <h6 style="background:#F8D7DA; border-style: none; border-radius: 10px;">ㅤВопрос: {{questions[i * 5 + j].texts}}
+                <h6 style="background:#F8D7DA; border-style: none; border-radius: 10px;">ㅤВопрос: {{questions[i * 5 +
+                    j].texts}}
                     <p style="background:#F8D7DA">ㅤОтвет: {{answers[i * 5 + j]}}
                     <p style="background:#F8D7DA">ㅤКомментарий: {{comments[i * 5 + j]}}</p></h6>
                 {% endif %}
-            {% endfor %}
-                </div>
-              </div>
-
+                {% endfor %}
             </div>
-    {% endfor %}
+        </div>
+
+    </div>
+</div>
+{% endfor %}
 {% endif %}
 
 {% endblock %}

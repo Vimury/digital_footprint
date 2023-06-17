@@ -7,7 +7,7 @@ from data.test_class import Test
 from random import choice
 
 
-def generate_quiz(id_student, id_groups, date_quiz=None):
+def generate_quiz(id_student, id_groups, date_quiz):
     # Создаёт quiz для одного студента
     db_sess = db_session.create_session()
 
@@ -33,9 +33,6 @@ def generate_quiz(id_student, id_groups, date_quiz=None):
     db_sess.commit()
 
 
-def generate_full(id_students, id_groups):
-    # Создаёт quiz для всех студентов
-    db_sess = db_session.create_session()
-
+def generate_full(id_students, id_groups, date):
     for id_student in id_students:
-        generate_quiz(id_student, id_groups=id_groups)
+        generate_quiz(id_student, id_groups, date)
