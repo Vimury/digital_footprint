@@ -42,7 +42,7 @@ def load_user(student_id):
 
 @app.template_filter('strptime')
 def _jinja2_filter_datetime(date):
-    return datetime.datetime.strptime(date, "%Y-%m-%d %H:%M")
+    return datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%s")
 
 
 @app.route('/waiting')
@@ -59,7 +59,7 @@ def waiting():
 def quiz(id):
     db_sess = db_session.create_session()
     query_quiz = db_sess.query(Quiz).filter(Quiz.id_quiz == id).first()
-    pytime = datetime.datetime.strptime(query_quiz.date, "%Y-%m-%d %H:%M")
+    pytime = datetime.datetime.strptime(query_quiz.date, "%Y-%m-%d %H:%M:%S")
     js_time = int(time.mktime(pytime.timetuple())) * 1000
     tests = db_sess.query(Test).filter(Test.id_quiz == id).all()
     quests = []
@@ -152,7 +152,7 @@ def my_quiz():
 
         quizzes_count = []
         for i in db_sess.query(Quiz).all():
-            if i not in quizzes_count:
+            if i.date not in quizzes_count:
                 quizzes_count.append(i.date)
 
         all_mark /= (len(quizzes_count) * 5)
