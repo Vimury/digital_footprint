@@ -1,5 +1,4 @@
 {% extends "head.html" %}
-<title>{% block title %} {{title}} {% endblock title %}</title>
 {% block content %}
 
 {% for user in query_groups %}
@@ -11,6 +10,7 @@
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#item{{loop.index}}" aria-expanded="false" aria-controls="flush-collapseOne">
             {{user.label}}
           </button>
+          <a href="/questions/add/{{user.id_group}}" class="btn btn-primary">Добавить вопрос</a>
         </h2>
         <div id="item{{loop.index}}" class="accordion-collapse collapse" data-bs-parent="#accordion{{loop.index}}">
           <ol>
