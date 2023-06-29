@@ -10,7 +10,6 @@ from flask_login import UserMixin
 
 class Quiz(SqlAlchemyBase, UserMixin):
     __tablename__ = 'quizzes'
-
     id_quiz = sqlalchemy.Column(sqlalchemy.Integer,
                                 primary_key=True, autoincrement=True)
     date = sqlalchemy.Column(sqlalchemy.String)

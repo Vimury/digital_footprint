@@ -6,6 +6,7 @@
 .block-right{width:49%;height:500px;overflow:auto;float:right}
 
 
+
 </style>
 <script>
     function selectAllStudents() {
@@ -20,9 +21,20 @@
     checkboxs[i].checked = !checkboxs[i].checked;
   }
 }
+    function refreshTime() {
+      const timeDisplay = document.getElementById("clock_time");
+      const dateString = new Date().toLocaleString();
+      const formattedString = dateString.replace(", ", " - ");
+      timeDisplay.textContent = formattedString;
+}
+    setInterval(refreshTime, 1000);
+
+
 </script>
 <form class="login_form" method="post">
-    <div style="font-size:30px; text-align:center" id="clock_time"><script>refreshTime()</script></div>
+    <div style="font-size:30px; text-align:center" id="clock_time">
+        <script>refreshTime()</script>
+    </div>
     <p>
         <input type="button" class="btn btn-primary" value="Выбрать всех студентов" onclick="selectAllStudents()">
         <input type="button" class="btn btn-primary" value="Выбрать все темы" onclick="selectAllGroups()">
@@ -31,10 +43,9 @@
     <div class="block-left">
         {% for user in query_students %}
         <div class="col-md6 border rounded" style="padding-left: 4px;">
-            <h3>{{user.name}}</h3>
-            <div class="form-check" align="right">
-                <input class="form-check-input student" name="{{user.name}}{{user.birthday}}" type="checkbox" value="{{user.id_student}}" id={{user.id_student}}>
-
+            <div class="form-check" align="left">
+                {{user.name}}<input class="form-check-input student" name="{{user.name}}{{user.birthday}}"
+                                    type="checkbox" value="{{user.id_student}}" id={{user.id_student}} checked>
             </div>
         </div>
         <br>
@@ -43,9 +54,9 @@
     <div class="block-right">
         {% for user in query_groups %}
         <div class="col-md6 border rounded" style="padding-left: 4px;">
-            <h3>{{user.label}}</h3>
             <div class="form-check form-switch">
-                <input class="form-check-input group" type="checkbox" id={{user.id_group}} name="{{user.label}}">
+                {{user.label}}<input class="form-check-input group" type="checkbox" id={{user.id_group}}
+                                     name="{{user.label}}" checked>
             </div>
         </div>
         <br>

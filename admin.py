@@ -178,8 +178,7 @@ def choice_student_groups():
         if groups:
             students = [i.id_student for i in query_students if
                         request.form.get(str(i.name) + str(i.birthday))]
-            print(request.form.get("clock_time"))
-            generate_full(students, groups, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            generate_full(students, groups, datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
             return redirect('/check_quiz')
 
     return render_template('make_test.html', query_students=query_students, query_groups=query_groups,
@@ -261,7 +260,6 @@ def edit_questions(id):
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         question = db_sess.query(Question).filter(Question.id_question == id).first()
-        group = db_sess.query(Group)
         if question:
             question.texts = form.content.data
             db_sess.commit()

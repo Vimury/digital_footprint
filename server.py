@@ -42,12 +42,19 @@ def load_user(student_id):
 
 @app.template_filter('strptime')
 def _jinja2_filter_datetime(date):
-    return datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%s")
+    return datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+
+
+@app.template_filter('localtime')
+def _jinja2_filter_datetime(date):
+    utc = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S").replace(tzinfo=datetime.timezone.utc).astimezone(
+        tz=None)
+    return utc.strftime("%Y-%m-%d %H:%M")
 
 
 @app.route('/waiting')
 def waiting():
-    time = datetime.datetime.now()
+    time = datetime.datetime.utcnow()
     dl = datetime.timedelta(minutes=5, seconds=30)
     db_sess = db_session.create_session()
     current_quizzes = db_sess.query(Quiz).filter_by(id_student=current_user.id_student).all()
@@ -156,7 +163,6 @@ def my_quiz():
                 quizzes_count.append(i.date)
 
         all_mark /= (len(quizzes_count) * 5)
-        print(question_marks)
 
         return render_template('my_quizzes.html', len=len(quizzes), dates=dates, marks=marks, all_mark=all_mark,
                                questions=questions, answers=answers, comments=comments, title="Мои тесты",
