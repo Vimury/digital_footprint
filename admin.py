@@ -238,9 +238,8 @@ def add_questions(id):
         question.id_group = id
         db_sess.add(question)
         db_sess.commit()
-        return redirect('/questions')
     return render_template('questions_add.html', query_questions=query_questions, query_groups=query_groups,
-                           title="Вопросы", form=form, theme=theme)
+                           title="Вопросы", form=form, theme=theme, id=id)
 
 
 @admin.route('/questions/<int:id>', methods=['GET', 'POST'])

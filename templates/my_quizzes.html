@@ -22,7 +22,12 @@
                     j].texts}}
                     <p style="background:#d2f4ea">ㅤОтвет: {{answers[i * 5 + j]}}
                     <p style="background:#d2f4ea">ㅤКомментарий: {{comments[i * 5 + j]}}</p></h6>
-                {% elif question_marks[i * 5 + j] == 0.5 %}
+                {% elif question_marks[i * 5 + j] == 0.6 %}
+                <h6 style="background:#ffe5d0; border-style: none; border-radius: 10px;">ㅤВопрос: {{questions[i * 5 +
+                    j].texts}}
+                    <p style="background:#ffe5d0">ㅤОтвет: {{answers[i * 5 + j]}}
+                    <p style="background:#ffe5d0">ㅤКомментарий: {{comments[i * 5 + j]}}</p></h6>
+                {% elif question_marks[i * 5 + j] == 0.4 %}
                 <h6 style="background:#ffe5d0; border-style: none; border-radius: 10px;">ㅤВопрос: {{questions[i * 5 +
                     j].texts}}
                     <p style="background:#ffe5d0">ㅤОтвет: {{answers[i * 5 + j]}}
