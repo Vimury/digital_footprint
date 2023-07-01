@@ -1,18 +1,5 @@
-<!-- Если что, я всё убрал. Загрузил только, чтобы работала прога без ошибок -->
-
 <!doctype html>
 <html lang="en">
-
-<script>
-function refreshTime() {
-  const timeDisplay = document.getElementById("clock_time");
-  const dateString = new Date().toLocaleString();
-  const formattedString = dateString.replace(", ", " - ");
-  timeDisplay.textContent = formattedString;
-}
-  setInterval(refreshTime, 1000);
-
-</script>
 
 <head>
     <meta charset="utf-8">

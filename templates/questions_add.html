@@ -1,31 +1,52 @@
 {% extends "head.html" %}
 {% block content %}
-<div class="col-md6 border rounded">
-    <h2>Добавить вопрос</h2>
-    <p>
-    {{ form.title.label }}<br>
-    <div class="form-control">
-        {{ theme }}<br>
+<style>
+    .block-left{width:49%;height:500px;overflow:auto;float:left;}
+    .block-right{width:49%;height:500px;overflow:auto;float:right}
+</style>
+<div class="block-left">
+    <div class="col-md6 border rounded">
+        <div style="padding-left: 4px;">
+            <h3>Список вопросов</h3>
+        </div>
+        {% for i in query_questions %}
+            {% if i.id_group == id %}
+                <div class="col-md6 border rounded" style="padding-left: 4px; margin: 2px;">
+                    {{ i.texts }}
+                </div>
+            {% endif %}
+        {% endfor %}
     </div>
-    {% for error in form.title.errors %}
-    <p class="alert alert-danger" role="alert">
-        {{ error }}
-    </p>
-    {% endfor %}
-    </p>
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
+</div>
+<div class="block-right">
+    <div class="col-md6 border rounded" style="padding: 2px;">
+        <h2>Добавить вопрос</h2>
         <p>
-            {{ form.content.label }}<br>
-            {{ form.content(class="form-control") }}<br>
-            {% for error in form.content.errors %}
-        <p content="alert alert-danger" role="alert">
+        {{ form.title.label }}<br>
+        <div class="form-control">
+            {{ theme }}<br>
+        </div>
+        {% for error in form.title.errors %}
+        <p class="alert alert-danger" role="alert">
             {{ error }}
         </p>
         {% endfor %}
         </p>
-        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-        {{message}}
-    </form>
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.content.label }}<br>
+                {{ form.content(class="form-control") }}<br>
+                {% for error in form.content.errors %}
+            <p content="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+            {% endfor %}
+            </p>
+            <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+            {{message}}
+        </form>
+    </div>
 </div>
+
 {% endblock %}

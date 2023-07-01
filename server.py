@@ -1,18 +1,19 @@
 import datetime
 import time
-from flask import Flask, render_template, redirect, request, abort
+from flask import Flask, render_template, redirect
 
 from data import db_session
 from data.login_form import LoginForm
-from data.question_class import Question, QuestionForm
-from data.student_class import Student, StudentForm
-from data.quiz_class import Quiz, QuizForm, CheckQuizForm
+from data.question_class import Question
+from data.student_class import Student
+from data.quiz_class import Quiz, QuizForm
 from data.register_form import RegisterForm
 from data.test_class import Test
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
+from config import TIME_TEST
 import math
 
-from admin import admin, check_admin
+from admin import admin
 
 db_session.global_init("db/digital_footprint.db")
 
@@ -42,12 +43,12 @@ def load_user(student_id):
 
 @app.template_filter('strptime')
 def _jinja2_filter_datetime(date):
-    return datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%s")
+    return datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
 
 
 @app.route('/waiting')
 def waiting():
-    time = datetime.datetime.now()
+    time = datetime.datetime.utcnow()
     dl = datetime.timedelta(minutes=5, seconds=30)
     db_sess = db_session.create_session()
     current_quizzes = db_sess.query(Quiz).filter_by(id_student=current_user.id_student).all()
@@ -74,7 +75,7 @@ def quiz(id):
 
     return render_template('quiz_page.html', id=id, questions_num=5,
                            query_questions=quests, title="Тестирование",
-                           form=form, timer=330, time=js_time)
+                           form=form, timer=TIME_TEST, time=js_time)
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -156,7 +157,6 @@ def my_quiz():
                 quizzes_count.append(i.date)
 
         all_mark /= (len(quizzes_count) * 5)
-        print(question_marks)
 
         return render_template('my_quizzes.html', len=len(quizzes), dates=dates, marks=marks, all_mark=all_mark,
                                questions=questions, answers=answers, comments=comments, title="Мои тесты",
