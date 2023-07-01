@@ -19,7 +19,7 @@ admin = Blueprint('admin', __name__)
 
 def check_admin(func):
     def wrapper(*args, **kwargs):
-        if current_user.is_admin:
+        if current_user.is_authenticated and current_user.is_admin:
             return func(*args, **kwargs)
         else:
             return redirect("/")
@@ -46,7 +46,8 @@ def table_view():
         if date not in dates:
             dates.append(date)
 
-    students = db_sess.query(Student).filter(Student.is_admin != 1).all()
+    students = sorted(db_sess.query(Student).filter(Student.is_admin == 0).all(), key=lambda x: x.name)
+    students.sort(key=lambda x: x.name)
 
     return render_template('results.html', dates=dates, students=students, len=len(students), len_dates=len(dates))
 
@@ -171,7 +172,7 @@ def students():
 @admin.route("/make_test", methods=['GET', 'POST'])
 @check_admin
 def choice_student_groups():
-    query_students = db_sess.query(Student).filter(Student.is_admin == 0)
+    query_students = sorted(db_sess.query(Student).filter(Student.is_admin == 0), key=lambda x: x.name)
     query_groups = db_sess.query(Group).all()
     if request.method == "POST":
         groups = [i.id_group for i in query_groups if request.form.get(str(i.label))]
@@ -217,8 +218,14 @@ def students_edit(id):
 def students_delete(id):
     db_sess = db_session.create_session()
     student = db_sess.query(Student).filter(Student.id_student == id).first()
+    quizes = db_sess.query(Quiz).filter(Quiz.id_student == id).all()
     if student:
         db_sess.delete(student)
+        for quiz in quizes:
+            tests = db_sess.query(Test).filter(Test.id_quiz == quiz.id_quiz).all()
+            for test in tests:
+                db_sess.delete(test)
+            db_sess.delete(quiz)
         db_sess.commit()
     else:
         abort(404)
@@ -238,8 +245,9 @@ def add_questions(id):
         question.id_group = id
         db_sess.add(question)
         db_sess.commit()
+        return redirect('/questions')
     return render_template('questions_add.html', query_questions=query_questions, query_groups=query_groups,
-                           title="Вопросы", form=form, theme=theme, id=id)
+                           title="Вопросы", form=form, theme=theme)
 
 
 @admin.route('/questions/<int:id>', methods=['GET', 'POST'])

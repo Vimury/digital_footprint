@@ -1,18 +1,19 @@
 import datetime
 import time
-from flask import Flask, render_template, redirect, request, abort
+from flask import Flask, render_template, redirect
 
 from data import db_session
 from data.login_form import LoginForm
-from data.question_class import Question, QuestionForm
-from data.student_class import Student, StudentForm
-from data.quiz_class import Quiz, QuizForm, CheckQuizForm
+from data.question_class import Question
+from data.student_class import Student
+from data.quiz_class import Quiz, QuizForm
 from data.register_form import RegisterForm
 from data.test_class import Test
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
+from config import TIME_TEST
 import math
 
-from admin import admin, check_admin
+from admin import admin
 
 db_session.global_init("db/digital_footprint.db")
 
@@ -45,13 +46,6 @@ def _jinja2_filter_datetime(date):
     return datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
 
 
-@app.template_filter('localtime')
-def _jinja2_filter_datetime(date):
-    utc = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S").replace(tzinfo=datetime.timezone.utc).astimezone(
-        tz=None)
-    return utc.strftime("%Y-%m-%d %H:%M")
-
-
 @app.route('/waiting')
 def waiting():
     time = datetime.datetime.utcnow()
@@ -81,7 +75,7 @@ def quiz(id):
 
     return render_template('quiz_page.html', id=id, questions_num=5,
                            query_questions=quests, title="Тестирование",
-                           form=form, timer=330, time=js_time)
+                           form=form, timer=TIME_TEST, time=js_time)
 
 
 @app.route("/login", methods=['GET', 'POST'])

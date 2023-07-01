@@ -22,12 +22,8 @@
 		let time;
 		function check_time()
 		{
-		    let date = new Date();
-            let b = new Date(date.getUTCFullYear(), date.getUTCMonth(),
-                date.getUTCDate(), date.getUTCHours(),
-                date.getUTCMinutes(), date.getUTCSeconds());
+            let b = new Date()
 			let diff = Math.round((b - a) / 1000);
-			console.log(diff);
 			return diff;
 		}
 
