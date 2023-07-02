@@ -1,21 +1,28 @@
 {% extends "head.html" %}
 {% block content %}
 
+<style type="text/css">
+
+.block-left{width:49%;height:200px;overflow:auto;float:left;margin-bottom:20px;word-wrap:break-word;padding-left:20px;padding-right:20px;}
+.block-right{width:49%;height:200px;overflow:auto;float:right;margin-bottom:20px;word-wrap:break-word;padding-left:20px;padding-right:20px;padding-top:30px;}
+
+
+
+</style>
+
 <form class="form" action="" method="post">
     {% for i in range(5) %}
     <div>
-        <h5>{{i + 1}}. {{questions[i].texts}}</h5>
-        <p>Ответ: {{answers[i]}}</p>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.comments[i].label }}<br>
-            {{ form.comments[i](class="form-control") }}<br>
+        <div class="block-left"><h5>{{i + 1}}. {{questions[i].texts}}</h5>
+        <p>Ответ: {{answers[i]}}</div>
+        <div class="block-right">{{ form.comments[i].label }}<br>
+            {{ form.comments[i](cols="20", class="form-control") }}<br>
             {% for error in form.comments[i].errors %}
                 <p class="alert alert-danger" role="alert">
                 {{ error }}
                 </p>
             {% endfor %}
-            <div class="block-right">
+
                     <div class="col-md6">
                         <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}" id="1.{{i}}" value=1.0>
                         <label class="form-check-label" for="1.{{i}}">
@@ -34,11 +41,13 @@
                             -
                         </label>
                     </div>
-                    <br>
 
 
-        </p>
+
+        {{ form.hidden_tag() }}
+
     </div>
+        <br/>
     {% endfor %}
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
     {{message}}

@@ -129,7 +129,7 @@ def index():
 def my_quiz():
     db_sess = db_session.create_session()
 
-    quizzes = db_sess.query(Quiz).filter(Quiz.id_student == current_user.id_student).all()
+    quizzes = db_sess.query(Quiz).filter(Quiz.id_student == current_user.id_student).all()[::-1]
     if quizzes:
         dates = []
         marks = []

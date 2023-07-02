@@ -81,16 +81,22 @@ def check_quiz(id):
     form = CheckQuizForm()
     quests = []
     answers = []
+    marks = []
+    comments = []
     for i in tests:
         quests.append(db_sess.query(Question).filter(Question.id_question == i.id_question).first())
         answers.append(i.stud_answers if i.stud_answers else "")
+        marks.append(i.mark if i.mark else 0)
+        comments.append(i.comment if i.comment else "")
+
     if form.validate_on_submit():
         for i in range(5):
             tests[i].mark = request.form.get("flexRadioDefault" + str(i))
             tests[i].comment = form.comments.data[i]
         db_sess.commit()
         return redirect("/")
-    return render_template("check_quiz.html", name=student.name, answers=answers, questions=quests, form=form)
+    return render_template("check_quiz.html", name=student.name, answers=answers, questions=quests, form=form,
+                           comments=comments, marks=marks)
 
 
 @admin.route('/add_student', methods=['GET', 'POST'])

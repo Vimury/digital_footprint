@@ -1,7 +1,15 @@
 {% extends "head.html" %}
 {% block content %}
+<style type="text/css">
+
+.block-left{width:60%;height:200px;overflow:auto;float:left;margin-bottom:20px;word-wrap:break-word;padding-left:20px;padding-right:20px;}
+.block-right{width:39%;height:200px;overflow:auto;float:right;margin-bottom:20px;word-wrap:break-word;padding-left:20px;padding-right:20px;}
+
+
+
+</style>
 {% if len == 0 %}
-<p>Вы ещё не писали не одного теста</p>
+<p>Вы ещё не писали ни одного теста</p>
 {% else %}
 <h2>Средний балл: {{all_mark}}</h2>
 {% for i in range(len) %}
@@ -18,25 +26,28 @@
             <div class="accordion-body">
                 {% for j in range(5) %}
                 {% if question_marks[i * 5 + j] == 1 %}
-                <h6 style="background:#d2f4ea; border-style: none; border-radius: 10px;">ㅤВопрос: {{questions[i * 5 +
-                    j].texts}}
-                    <p style="background:#d2f4ea">ㅤОтвет: {{answers[i * 5 + j]}}
-                    <p style="background:#d2f4ea">ㅤКомментарий: {{comments[i * 5 + j]}}</p></h6>
-                {% elif question_marks[i * 5 + j] == 0.6 %}
-                <h6 style="background:#ffe5d0; border-style: none; border-radius: 10px;">ㅤВопрос: {{questions[i * 5 +
-                    j].texts}}
-                    <p style="background:#ffe5d0">ㅤОтвет: {{answers[i * 5 + j]}}
-                    <p style="background:#ffe5d0">ㅤКомментарий: {{comments[i * 5 + j]}}</p></h6>
-                {% elif question_marks[i * 5 + j] == 0.4 %}
-                <h6 style="background:#ffe5d0; border-style: none; border-radius: 10px;">ㅤВопрос: {{questions[i * 5 +
-                    j].texts}}
-                    <p style="background:#ffe5d0">ㅤОтвет: {{answers[i * 5 + j]}}
-                    <p style="background:#ffe5d0">ㅤКомментарий: {{comments[i * 5 + j]}}</p></h6>
+                <div class="block-left" style="background:#d2f4ea; border-style: none; border-radius: 10px; ">
+                    <h6>Вопрос: {{questions[i * 5 + j].texts}}</h6>
+                    <p >Ответ: {{answers[i * 5 + j]}}</p></div>
+                <div class="block-right" style="background:#d2f4ea; border-style: none; border-radius: 10px;">
+                    <p>Комментарий: {{comments[i * 5 + j]}}</p>
+                    <p>Балл: {{question_marks[i * 5 + j]}}</p></div>
+
+                {% elif question_marks[i * 5 + j] == 0.6 or question_marks[i * 5 + j] == 0.4 %}
+                <div class="block-left" style="background:#ffe5d0; border-style: none; border-radius: 10px; ">
+                    <h6>Вопрос: {{questions[i * 5 + j].texts}}</h6>
+                    <p >Ответ: {{answers[i * 5 + j]}}</p></div>
+                <div class="block-right" style="background:#ffe5d0; border-style: none; border-radius: 10px;">
+                    <p>Комментарий: {{comments[i * 5 + j]}}</p>
+                    <p>Балл: {{question_marks[i * 5 + j]}}</p></div>
+
                 {% else %}
-                <h6 style="background:#F8D7DA; border-style: none; border-radius: 10px;">ㅤВопрос: {{questions[i * 5 +
-                    j].texts}}
-                    <p style="background:#F8D7DA">ㅤОтвет: {{answers[i * 5 + j]}}
-                    <p style="background:#F8D7DA">ㅤКомментарий: {{comments[i * 5 + j]}}</p></h6>
+                <div class="block-left" style="background:#F8D7DA; border-style: none; border-radius: 10px; ">
+                    <h6>Вопрос: {{questions[i * 5 + j].texts}}</h6>
+                    <p >Ответ: {{answers[i * 5 + j]}}</p></div>
+                <div class="block-right" style="background:#F8D7DA; border-style: none; border-radius: 10px;">
+                    <p>Комментарий: {{comments[i * 5 + j]}}</p>
+                    <p>Балл: {{question_marks[i * 5 + j]}}</p></div>
                 {% endif %}
                 {% endfor %}
             </div>
