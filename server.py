@@ -9,6 +9,8 @@ from data.student_class import Student
 from data.quiz_class import Quiz, QuizForm
 from data.register_form import RegisterForm
 from data.test_class import Test
+from data.group_class import Group
+from data import diagrams
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 from config import TIME_TEST
 import math
@@ -152,17 +154,60 @@ def my_quiz():
             marks.append(sm / 5)
 
         quizzes_count = []
-        for i in db_sess.query(Quiz).all():
+        quiz_ids = []
+        for i in quizzes:
             if i.date not in quizzes_count:
                 quizzes_count.append(i.date)
+                quiz_ids.append(i.id_quiz)
 
         all_mark /= (len(quizzes_count) * 5)
 
+        query_test = db_sess.query(Test).filter(Test.id_quiz.in_(quiz_ids)).all()
+        results = {}
+        themes = {}
+        for i in query_test:
+            query = db_sess.query(Question).filter(Question.id_question == i.id_question).first()
+            group_id = query.id_group
+            group_label = db_sess.query(Group).filter(Group.id_group == group_id).first().label
+            if i.mark != None:
+                themes[group_id] = group_label
+            if group_id in results and i.mark != None:
+                results[group_id] = (results[group_id][0] + i.mark, results[group_id][1] + 1)
+            elif i.mark != None:
+                results[group_id] = (i.mark, 1)
+
+        themes = [i[1] for i in sorted(themes.items())]
+        results = [i[1][0] / i[1][1] * 100 for i in sorted(results.items())]
+        diagram = diagrams.create_diagram(themes, results)
         return render_template('my_quizzes.html', len=len(quizzes), dates=dates, marks=marks, all_mark=all_mark,
                                questions=questions, answers=answers, comments=comments, title="Мои тесты",
-                               question_marks=question_marks)
+                               question_marks=question_marks, diagram=diagram)
     else:
-        return render_template('my_quizzes.html', len=0)
+        quizzes_count = []
+        quiz_ids = []
+        for i in quizzes:
+            if i.date not in quizzes_count:
+                quizzes_count.append(i.date)
+                quiz_ids.append(i.id_quiz)
+
+        query_test = db_sess.query(Test).filter(Test.id_quiz.in_(quiz_ids)).all()
+        results = {}
+        themes = {}
+        for i in query_test:
+            query = db_sess.query(Question).filter(Question.id_question == i.id_question).first()
+            group_id = query.id_group
+            group_label = db_sess.query(Group).filter(Group.id_group == group_id).first().label
+            if i.mark != None:
+                themes[group_id] = group_label
+            if group_id in results and i.mark != None:
+                results[group_id] = (results[group_id][0] + i.mark, results[group_id][1] + 1)
+            elif i.mark != None:
+                results[group_id] = (i.mark, 1)
+
+        themes = [i[1] for i in sorted(themes.items())]
+        results = [i[1][0] / i[1][1] * 100 for i in sorted(results.items())]
+        diagram = diagrams.create_diagram(themes, results)
+        return render_template('my_quizzes.html', len=0, diagram=diagram)
 
 
 @app.template_filter('get_results')

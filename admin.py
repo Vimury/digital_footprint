@@ -1,14 +1,14 @@
 import datetime
-
 from flask import Blueprint, render_template, redirect, request, abort
+from flask_login import login_user, current_user
 
 from data import db_session
+from data import diagrams
 from data.group_class import Group, GroupForm
 from data.question_class import Question, QuestionForm
-from data.student_class import Student, StudentForm
 from data.quiz_class import Quiz, CheckQuizForm
+from data.student_class import Student, StudentForm
 from data.test_class import Test
-from flask_login import login_user, current_user
 from generate_quiz import generate_full
 
 db_session.global_init("db/digital_footprint.db")
@@ -41,15 +41,33 @@ def questions():
 @check_admin
 def table_view():
     dates = []
+    query_question = db_sess.query(Question)
+    query_test = db_sess.query(Test).all()
     for i in db_sess.query(Quiz).all():
         date = i.date
         if date not in dates:
             dates.append(date)
 
+    results = {}
+    themes = {}
+    for i in query_test:
+        query = db_sess.query(Question).filter(Question.id_question == i.id_question).first()
+        group_id = query.id_group
+        group_label = db_sess.query(Group).filter(Group.id_group == group_id).first().label
+        if i.mark != None:
+            themes[group_id] = group_label
+        if group_id in results and i.mark != None:
+            results[group_id] = (results[group_id][0] + i.mark, results[group_id][1] + 1)
+        elif i.mark != None:
+            results[group_id] = (i.mark, 1)
+
+    themes = [i[1] for i in sorted(themes.items())]
+    results = [i[1][0] / i[1][1] * 100 for i in sorted(results.items())]
+    diagram = diagrams.create_diagram(themes, results)
     students = sorted(db_sess.query(Student).filter(Student.is_admin == 0).all(), key=lambda x: x.name)
     students.sort(key=lambda x: x.name)
-
-    return render_template('results.html', dates=dates, students=students, len=len(students), len_dates=len(dates))
+    return render_template('results.html', dates=dates, students=students, len=len(students), len_dates=len(dates),
+                           diagram=diagram)
 
 
 @admin.route('/check_quiz', methods=['POST', 'GET'])
