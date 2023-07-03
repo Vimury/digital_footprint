@@ -5,51 +5,47 @@
 
 .block-left{width:49%;height:200px;overflow:auto;float:left;margin-bottom:20px;word-wrap:break-word;padding-left:20px;padding-right:20px;}
 .block-right{width:49%;height:200px;overflow:auto;float:right;margin-bottom:20px;word-wrap:break-word;padding-left:20px;padding-right:20px;padding-top:30px;}
-
-
-
 </style>
-
 <form class="form" action="" method="post">
     {% for i in range(5) %}
     <div>
         <div class="block-left"><h5>{{i + 1}}. {{questions[i].texts}}</h5>
-        <p>Ответ: {{answers[i]}}</div>
+            <p>Ответ: {{answers[i]}}</div>
         <div class="block-right">{{ form.comments[i].label }}<br>
             {{ form.comments[i](cols="20", class="form-control") }}<br>
             {% for error in form.comments[i].errors %}
-                <p class="alert alert-danger" role="alert">
+            <p class="alert alert-danger" role="alert">
                 {{ error }}
-                </p>
+            </p>
             {% endfor %}
 
-                    <div class="col-md6">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}" id="1.{{i}}" value=1.0>
-                        <label class="form-check-label" for="1.{{i}}">
-                            +
-                        </label>
-                        <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}" id="2.{{i}}" value=0.6>
-                        <label class="form-check-label" for="2.{{i}}">
-                            +-
-                        </label>
-                        <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}" id="3.{{i}}" value=0.4>
-                        <label class="form-check-label" for="3.{{i}}">
-                            -+
-                        </label>
-                        <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}" id="4.{{i}}" value=0 checked>
-                        <label class="form-check-label" for="4.{{i}}">
-                            -
-                        </label>
-                    </div>
+            <div class="col-md6">
+                <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}" id="1.{{i}}" value=1.0>
+                <label class="form-check-label" for="1.{{i}}">
+                    +
+                </label>
+                <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}" id="2.{{i}}" value=0.6>
+                <label class="form-check-label" for="2.{{i}}">
+                    +-
+                </label>
+                <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}" id="3.{{i}}" value=0.4>
+                <label class="form-check-label" for="3.{{i}}">
+                    -+
+                </label>
+                <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}" id="4.{{i}}" value=0 checked>
+                <label class="form-check-label" for="4.{{i}}">
+                    -
+                </label>
+            </div>
 
 
+            {{ form.hidden_tag() }}
 
-        {{ form.hidden_tag() }}
-
-    </div>
+        </div>
         <br/>
-    {% endfor %}
-    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        {% endfor %}
+        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    </div>
     {{message}}
 </form>
 {% endblock %}
