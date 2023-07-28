@@ -13,7 +13,7 @@ from data.group_class import Group
 from data import diagrams
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 from config import TIME_TEST
-import math
+from math import ceil
 
 from admin import admin
 
@@ -247,7 +247,7 @@ def get_results(args):
                 Test.id_quiz == j.id_quiz):
             if i.mark:
                 mark += i.mark
-    return math.ceil(mark / count)
+    return ceil(mark / count)
 
 
 if __name__ == '__main__':
